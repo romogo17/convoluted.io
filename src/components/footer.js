@@ -3,7 +3,7 @@ import Menu from './menu'
 import SocialIcons from './social-icons'
 import Newsletter from "./newsletter"
 
-import "./footer.css"
+import "./footer.scss"
 
 export default class Footer extends Component {
   render() {

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import "./social-icons.css"
+import "./social-icons.scss"
 
 export const icons = [
   // Github

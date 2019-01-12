@@ -2,12 +2,12 @@ import React, { Component } from 'react'
 import Link from 'gatsby-link'
 import {StaticQuery, graphql} from "gatsby"
 import links from './menu-links.json'
-import "./menu.css"
+import "./menu.scss"
 
-const emojiStyle = {
-  width: 20,
-  height: 20
-}
+// const emojiStyle = {
+//   width: 20,
+//   height: 20
+// }
 
 export default class Menu extends Component {
   render() {
@@ -31,7 +31,7 @@ export default class Menu extends Component {
 
     return ([
       render(l.to, l.title, l.emoji, className),
-      i == 1 && !this.props.footer && location !== '/' ? this.renderLogo() : null
+      i === 1 && !this.props.footer && location !== '/' ? this.renderLogo() : null
     ])
   }
 
@@ -59,27 +59,29 @@ export default class Menu extends Component {
 
   renderLogo(caption) {
     return (
-      <StaticQuery
-        query={
-          graphql`
-            query {
-              file(relativePath: { eq: "convoluted-icon.png" }) {
-                childImageSharp {
-                  original {
-                    src
+      <a className="logo" href="/" key={caption || "convoluted.io"}>
+        <StaticQuery
+          query={
+            graphql`
+              query {
+                file(relativePath: { eq: "convoluted-icon.png" }) {
+                  childImageSharp {
+                    original {
+                      src
+                    }
                   }
                 }
               }
-            }
-          `
-        }
-        render={data => (
-            <a className="logo" href="/">
-              <img src={data.file.childImageSharp.original.src} />
+            `
+          }
+          render={data => (
+            <>
+              <img src={data.file.childImageSharp.original.src} alt={caption || "convoluted.io"} />
               {caption || "convoluted.io"}
-            </a>
+            </>
           )}
-      />
+        />
+      </a>
     )
   }
 }

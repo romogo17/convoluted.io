@@ -1,79 +1,74 @@
 .simple-layout {
   min-height: 100%;
-}
-
-.simple-layout .content {
-  width: 70%;
-  margin: 150px auto;
-}
-
-.simple-layout .content a {
-  color: #111;
-  text-decoration: none;
-  // border-bottom: 3px solid #9dffc8;
-  border-bottom: 3px solid #ff7a7a;
-}
-
-.simple-layout .content a:hover {
-  border-color: transparent;
-}
-
-.simple-layout .content > h1,
-.simple-layout .content .presentation-title h1 {
-  font: 600 54px/58px Tiemposheadline, Arial, sans-serif;
-  color: #111;
-  text-align: center;
-  letter-spacing: -0.2px;
-  margin-bottom: 10px;
-}
-
-.simple-layout .content > h2,
-.simple-layout .content > h2 span {
-  font: 400 16px/1.7 'Open Sans', sans-serif;
-  color: #888;
-  text-align: center;
-  max-width: 450px;
-  margin: 0px auto;
-}
-
-.simple-layout .content .slide {
-  height: calc(100vh);
-}
-
-.simple-layout .content .slide .quote {
-  width: 800px;
-  margin: 0 auto;
-  margin-top: 300px;
-  font: 600 28px/1.8 'Open Sans', sans-serif;
-  position: relative;
-  color: #000;
-}
-
-.simple-layout .content .slide .quote label {
-  position: absolute;
-  bottom: -50px;
-  left: 0;
-  font-size: 16px;
-  font-weight: normal;
-}
-
-.simple-layout .content .presentation-title {
-  height: calc(100vh - 150px);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.simple-layout .content .presentation-title h1 {
-  width: 550px;
-  margin-top: -150px;
-  font-size: 72px;
-  line-height: 1.3;
-}
-
-.simple-layout .content .presentation-title h2 {
-  margin: 0 0 0 0;
-  text-align: center;
+  .content {
+    width: 70%;
+    margin: 150px auto;
+    a {
+      color: #111;
+      text-decoration: none;
+      // border-bottom: 3px solid #9dffc8;
+      border-bottom: 3px solid #ff7a7a;
+      &:hover {
+        border-color: transparent;
+      }
+    }
+    > h1,
+    .presentation-title h1 {
+      font: 600 54px/58px Tiemposheadline, Arial, sans-serif;
+      color: #111;
+      text-align: center;
+      letter-spacing: -0.2px;
+      margin-bottom: 10px;
+    }
+    > h2 {
+      font: 400 16px/1.7 'Open Sans', sans-serif;
+      color: #888;
+      text-align: center;
+      max-width: 450px;
+      margin: 0px auto;
+      span {
+        font: 400 16px/1.7 'Open Sans', sans-serif;
+        color: #888;
+        text-align: center;
+        max-width: 450px;
+        margin: 0px auto;
+      }
+    }
+    .slide {
+      height: calc(100vh);
+      .quote {
+        width: 800px;
+        margin: 0 auto;
+        margin-top: 300px;
+        font: 600 28px/1.8 'Open Sans', sans-serif;
+        position: relative;
+        color: #000;
+        label {
+          position: absolute;
+          bottom: -50px;
+          left: 0;
+          font-size: 16px;
+          font-weight: normal;
+        }
+      }
+    }
+    .presentation-title {
+      height: calc(100vh - 150px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      h1 {
+        width: 550px;
+        margin-top: -150px;
+        font-size: 72px;
+        line-height: 1.3;
+      }
+      h2 {
+        margin: 0 0 0 0;
+        text-align: center;
+      }
+    }
+  }
 }
 
 @media (max-width: 1224px) {
@@ -85,28 +80,26 @@
 @media (max-width: 900px) {
   .simple-layout .content {
     margin-top: 75px;
-  }
-
-  .simple-layout .content > h1 {
-    font-size: 48px;
-    line-height: 52px;
-  }
-
-  .simple-layout .content > h2 {
-    font-size: 14px;
-    line-height: 18px;
-    max-width: 300px;
-  }
-
-  .simple-layout .content .presentation-title h1 {
-    font-size: 42px;
-    line-height: 1.3;
-    width: 100%;
-  }
-
-  .simple-layout .content .slide .quote {
-    width: 100%;
-    font-size: 18px;
-    line-height: 1.4;
+    > {
+      h1 {
+        font-size: 48px;
+        line-height: 52px;
+      }
+      h2 {
+        font-size: 14px;
+        line-height: 18px;
+        max-width: 300px;
+      }
+    }
+    .presentation-title h1 {
+      font-size: 42px;
+      line-height: 1.3;
+      width: 100%;
+    }
+    .slide .quote {
+      width: 100%;
+      font-size: 18px;
+      line-height: 1.4;
+    }
   }
 }

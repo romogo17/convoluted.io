@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
-import "./share-buttons.css"
+import "./share-buttons.scss"
 
 export default class ShareButtons extends Component {
   render() {
     return (
       <div className="share-buttons">
         <div className="inner">
-        <a title="Share on Twitter" target="_blank" href={`https://twitter.com/intent/tweet?text=${encodeURI(this.props.title + '\nhttp://convoluted.io' + this.props.path)}`}>
+        <a title="Share on Twitter" target="_blank" rel="noopener noreferrer" href={`https://twitter.com/intent/tweet?text=${encodeURI(this.props.title + '\nhttp://convoluted.io' + this.props.path)}`}>
           <svg fill="currentColor" height="32" width="32" viewBox="0 0 512 512">
             <path d="M492,109.5c-17.4,7.7-36,12.9-55.6,15.3c20-12,35.4-31,42.6-53.6c-18.7,11.1-39.4,19.2-61.5,23.5
 	                   C399.8,75.8,374.6,64,346.8,64c-53.5,0-96.8,43.4-96.8,96.9c0,7.6,0.8,15,2.5,22.1c-80.5-4-151.9-42.6-199.6-101.3
@@ -17,7 +17,7 @@ export default class ShareButtons extends Component {
           </svg>
         </a>
 
-        <a title="Share on Facebook" target="_blank" href={`https://www.facebook.com/sharer/sharer.php?u=${'http://convoluted.io' + this.props.path}`}>
+        <a title="Share on Facebook" target="_blank" rel="noopener noreferrer" href={`https://www.facebook.com/sharer/sharer.php?u=${'http://convoluted.io' + this.props.path}`}>
           <svg fill="currentColor" height="32" width="32" viewBox="0 0 512 512">
             <path d="M288,192v-38.1c0-17.2,3.8-25.9,30.5-25.9H352V64h-55.9c-68.5,0-91.1,31.4-91.1,85.3V192h-45v64h45v192h83V256h56.4l7.6-64
 	                   H288z" data-reactid="75"></path>

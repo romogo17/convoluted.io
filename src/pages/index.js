@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { graphql } from 'gatsby'
 import Intro from '../components/intro'
 import CenteredLayout from '../components/centered-layout'
 // import Newsletter from "../components/newsletter"

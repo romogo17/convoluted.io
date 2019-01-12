@@ -1,6 +1,6 @@
 import React, { Component } from "react"
-import "./newsletter.css"
-import "./rainbow.css"
+import "./newsletter.scss"
+import "./rainbow.scss"
 
 export default class Newsletter extends Component {
   submit() {

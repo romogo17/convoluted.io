@@ -4,10 +4,10 @@ import SocialIcons from './social-icons'
 import links from './menu-links.json'
 import "./burger-menu.scss"
 
-const emojiStyle = {
-  width: 20,
-  height: 20
-}
+// const emojiStyle = {
+//   width: 20,
+//   height: 20
+// }
 
 export default class BurgerMenu extends Component {
   toggle() {
@@ -40,7 +40,7 @@ export default class BurgerMenu extends Component {
             <div className="hamburger" onClick={() => this.toggle()}></div>
               <div className="header">
                 <h1>
-                  <img src={data.file.childImageSharp.original.src} />
+                  <img src={data.file.childImageSharp.original.src} alt="Profile" />
                   <a href="/">convoluted.io</a>
                 </h1>
               </div>

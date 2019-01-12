@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import "./intro.css"
+import "./intro.scss"
 
 const blocks = [
   `I'm currently based in Costa Rica. I spend most of my time programming, reading and learning new tech.`,
