@@ -1,21 +1,63 @@
-import React from 'react'
-import { Link } from 'gatsby'
+import React, { Component } from 'react'
+import Intro from '../components/intro'
+import CenteredLayout from '../components/centered-layout'
+// import Newsletter from "../components/newsletter"
 
-import Layout from '../components/layout'
-import Image from '../components/image'
-import SEO from '../components/seo'
+import "./index.scss"
 
-const IndexPage = () => (
-  <Layout>
-    <SEO title="Home" keywords={[`gatsby`, `application`, `react`]} />
-    <h1>Hi people</h1>
-    <p>Welcome to your new Gatsby site.</p>
-    <p>Now go build something great.</p>
-    <div style={{ maxWidth: `300px`, marginBottom: `1.45rem` }}>
-      <Image />
-    </div>
-    <Link to="/page-2/">Go to page 2</Link>
-  </Layout>
-)
+export default class IndexPage extends Component {
+  render() {
+    return (
+      <CenteredLayout name="index"
+                      location={this.props.location} // Needed for menus
+                      title="Home">
+        <div className="columns">
+          {this.renderIntro()}
+          {this.renderPhoto(this.props.data.file.childImageSharp.original.src)}
+        </div>
+     </CenteredLayout>
+    )
+  }
 
-export default IndexPage
+  renderIntro() {
+    return (
+      <div className="left column">
+        <h1 className="title">
+          I craft software.
+        </h1>
+        <h2>
+        My name is <strong>Roberto Mora</strong>. I recently founded a startup named <strong>Tensorful</strong>, which is dedicated to creating data driven software solutions.
+        </h2>
+        <Intro />
+        {/* <div className="inline-newsletter">
+          <div className="zigzag"></div>
+          <Newsletter />
+        </div> */}
+      </div>
+    )
+  }
+
+  renderPhoto(src) {
+    return (
+      <div className="right column">
+        <img
+          alt="Profile"
+          className="profile-picture"
+          src={src || 'https://farm5.staticflickr.com/4879/31742762527_9b17a4e93d_b.jpg'}
+        />
+      </div>
+    )
+  }
+}
+
+export const query = graphql`
+  query IndexPageQuery {
+    file(relativePath: { eq: "profile-picture.png" }) {
+      childImageSharp {
+        original {
+          src
+        }
+      }
+    }
+  }
+`

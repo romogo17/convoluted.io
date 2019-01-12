@@ -1,11 +1,23 @@
+const config = require('./config')
+
 module.exports = {
   siteMetadata: {
-    title: `Gatsby Default Starter`,
-    description: `Kick off your next, great Gatsby project with this default starter. This barebones starter ships with the main Gatsby configuration files you might need.`,
-    author: `@gatsbyjs`,
+    title: config.title,
+    description: config.description,
+    author: config.author,
   },
   plugins: [
+    /**
+     * React Helmet is a component which lets you control your document
+     * head using their React component.
+     **/
     `gatsby-plugin-react-helmet`,
+    `gatsby-plugin-sass`,
+    /**
+     * Plugin for creating File nodes from the file system.
+     * The various “transformer” plugins transform File nodes into
+     * various other types of data
+     **/
     {
       resolve: `gatsby-source-filesystem`,
       options: {
@@ -13,22 +25,59 @@ module.exports = {
         path: `${__dirname}/src/images`,
       },
     },
+    {
+      resolve: `gatsby-source-filesystem`,
+      options: {
+        name: `posts`,
+        path: `${__dirname}/src/posts`,
+      },
+    },
+    {
+      resolve: "gatsby-transformer-remark",
+      options: {
+        plugins: [
+          `gatsby-remark-prismjs`,
+          `gatsby-remark-katex`
+        ]
+      }
+    },
+    "gatsby-transformer-json",
+    // TODO: create the google analytics account
+    // {
+    //   resolve: `gatsby-plugin-google-analytics`,
+    //   options: {
+    //     trackingId: config.analytics
+    //   }
+    // },
+    // TODO: add the feed plugin for RSS support
+    /**
+     * Creates ImageSharp nodes from image types that are supported by the
+     * Sharp image processing library
+     **/
     `gatsby-transformer-sharp`,
+    /**
+     * Exposes several image processing functions built on the
+     * Sharp image processing library.
+     **/
     `gatsby-plugin-sharp`,
+    /**
+     * Adds support for shipping a manifest.webmanifest with your site.
+     **/
     {
       resolve: `gatsby-plugin-manifest`,
       options: {
-        name: `gatsby-starter-default`,
-        short_name: `starter`,
+        name: `Roberto Mora`,
+        short_name: `Roberto`,
         start_url: `/`,
         background_color: `#663399`,
         theme_color: `#663399`,
         display: `minimal-ui`,
-        icon: `src/images/gatsby-icon.png`, // This path is relative to the root of the site.
+        icon: `src/images/convoluted-icon.png`, // This path is relative to the root of the site.
       },
     },
-    // this (optional) plugin enables Progressive Web App + Offline functionality
-    // To learn more, visit: https://gatsby.app/offline
+    /**
+     * This (optional) plugin enables Progressive Web App + Offline functionality
+     **/
     // 'gatsby-plugin-offline',
-  ],
+  ]
 }
