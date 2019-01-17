@@ -6,6 +6,7 @@ module.exports = {
     shortName: config.shortName,
     siteLanguage: config.siteLanguage,
     url: config.url,
+    siteUrl: config.url,
     description: config.description,
     twitter: config.twitter,
   },
@@ -130,6 +131,8 @@ module.exports = {
         icon: `src/images/convoluted-icon.png`, // This path is relative to the root of the site.
       },
     },
+    `gatsby-plugin-sitemap`,
+    `gatsby-plugin-robots-txt`,
     /**
      * This (optional) plugin enables Progressive Web App + Offline functionality
      **/

@@ -40,12 +40,15 @@ yarn format
 yarn build && yarn serve
 ```
 
-## 🧐 To do
+## 🧐 TODO
 
 - [ ] Create the `/software` page
 - [ ] Copy the rest of the posts
 - [ ] Upload a PDF of the resume (english version)
-- [ ] Check Google Analytics
+- [ ] Check RSS feed
+- [x] Add sitemap and `robots.txt`
+- [x] Check Google Analytics
+- [x] Set up DNS records and netlify redirects
 
 ## 💫 Deploy
 
