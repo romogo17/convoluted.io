@@ -12,7 +12,7 @@ exports.createPages = ({ graphql, actions }) => {
             aliasPath
             path
             title
-            desc
+            description
             date(formatString: "DD MMMM, YYYY")
           }
         }
@@ -28,20 +28,17 @@ exports.createPages = ({ graphql, actions }) => {
       createPage({
         path: node.frontmatter.path,
         component: blogPost,
-        // context: {
-        //   path: node.frontmatter.path
-        // }
       })
 
-      // if (node.frontmatter.aliasPath) {
-      //   createPage({
-      //     path: node.frontmatter.aliasPath,
-      //     component: blogPost,
-      //     context: {
-      //       path: node.frontmatter.path
-      //     }
-      //   })
-      // }
+      if (node.frontmatter.aliasPath) {
+        createPage({
+          path: node.frontmatter.aliasPath,
+          component: blogPost,
+          // context: {
+          //   path: node.frontmatter.path
+          // }
+        })
+      }
     })
   })
 }

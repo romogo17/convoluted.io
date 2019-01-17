@@ -1,26 +1,32 @@
-import React, { Component } from "react"
+import React, { Component } from 'react'
 import { graphql } from 'gatsby'
-import SimpleLayout from "../components/simple-layout"
+import SimpleLayout from '../components/simple-layout'
+import ShareButtons from '../components/share-buttons'
+import './blog-post.scss'
+import 'prismjs/themes/prism-solarizedlight.css'
+import 'katex/dist/katex.min.css'
 // import Newsletter from "../components/newsletter"
-import ShareButtons from "../components/share-buttons"
-import "./blog-post.scss"
-
-import "prismjs/themes/prism-solarizedlight.css"
 // import "prismjs/themes/prism-dark.css"
 
 export default class BlogPostTemplate extends Component {
   render() {
-    const post = this.props.data.markdownRemark
-    // const siteTitle = this.props.data.site.siteMetadata.title
+    if (!this.props.data.markdownRemark)
+      this.props.data.markdownRemark = this.props.data.aliasMarkdownRemark
+    const post =
+      this.props.data.markdownRemark || this.props.data.aliasMarkdownRemark
 
     return (
       <SimpleLayout
         name="blog-post"
         location={this.props.location}
         title={post.frontmatter.title}
+        desc={post.frontmatter.description}
+        banner={post.frontmatter.image}
+        pathname={post.frontmatter.url}
+        article
       >
-        {this.renderTitle()}
-        {this.renderImage()}
+        {this.renderTitle(post)}
+        {this.renderImage(post)}
         <div className="post" dangerouslySetInnerHTML={{ __html: post.html }} />
         <ShareButtons
           title={post.frontmatter.title}
@@ -34,47 +40,42 @@ export default class BlogPostTemplate extends Component {
     )
   }
 
-  renderTitle() {
-    const post = this.props.data.markdownRemark.frontmatter
-
+  renderTitle({ frontmatter: post }) {
     if (post.presentation) {
-      return this.renderPresentationTitle()
+      return this.renderPresentationTitle(post)
     }
 
     return [
-      <h1>{post.title}</h1>,
-      <h2>
-        {post.desc ? <span>{post.desc}</span> : null}{" "}
-        <span className="date">{post.date}</span>{" "}
-      </h2>
+      <h1 key="0">{post.title}</h1>,
+      <h2 key="1">
+        {post.description ? <span>{post.description}</span> : null}{' '}
+        <span className="date">{post.date}</span>{' '}
+      </h2>,
     ]
   }
 
-  renderPresentationTitle() {
-    const post = this.props.data.markdownRemark.frontmatter
-    // console.log("-->", post)
-
+  renderPresentationTitle(post) {
     return (
       <div className="presentation-title">
         <section>
           <h1>{post.title}</h1>
           <h2>
-            <span className="date">Last Update: {post.date}</span>{" "}
+            <span className="date">Last Update: {post.date}</span>{' '}
           </h2>
         </section>
       </div>
     )
   }
 
-  renderImage() {
-    const post = this.props.data.markdownRemark.frontmatter
+  renderImage({ frontmatter: post }) {
+    // const post = this.props.data.markdownRemark.frontmatter
 
     if (post.presentation) return null
     if (!post.image || post.hideImage || !post.image.trim())
       return <div className="post-image-space" />
 
     const css = {
-      backgroundImage: `url(${post.image})`
+      backgroundImage: `url(${post.image})`,
     }
 
     if (post.imageHeight) {
@@ -95,7 +96,7 @@ export default class BlogPostTemplate extends Component {
 
     return (
       <div
-        className={"post-image " + (post.imageCaption ? "has-caption" : "")}
+        className={'post-image ' + (post.imageCaption ? 'has-caption' : '')}
         style={css}
       >
         {post.imageCaption ? (
@@ -118,10 +119,26 @@ export const pageQuery = graphql`
       html
       frontmatter {
         title
-        desc
+        description
         image
         imageHeight
-        imageSize
+        imageCaption
+        hideImage
+        presentation
+        path
+        date(formatString: "MMMM DD, YYYY")
+      }
+    }
+    aliasMarkdownRemark: markdownRemark(
+      frontmatter: { aliasPath: { eq: $path } }
+    ) {
+      id
+      html
+      frontmatter {
+        title
+        description
+        image
+        imageHeight
         imageCaption
         hideImage
         presentation

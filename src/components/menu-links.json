@@ -1,5 +1,5 @@
 [
   { "to": "/blog", "emoji": "📖", "title": "Blog" },
-  { "to": "/software", "emoji": "💻", "title": "Software" },
+  { "draft": "true", "to": "/software", "emoji": "💻", "title": "Software" },
   { "to": "mailto:romogo17@gmail.com", "emoji": "💌", "title": "E-Mail" }
 ]

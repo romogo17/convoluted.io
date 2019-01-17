@@ -3,8 +3,12 @@ const config = require('./config')
 module.exports = {
   siteMetadata: {
     title: config.title,
+    shortName: config.shortName,
+    siteLanguage: config.siteLanguage,
+    url: config.url,
     description: config.description,
-    author: config.author,
+    banner: config.banner,
+    twitter: config.twitter,
   },
   plugins: [
     /**

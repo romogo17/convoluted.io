@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import Menu from './menu'
 import SocialIcons from './social-icons'
-import Newsletter from "./newsletter"
+import Newsletter from './newsletter'
 
-import "./footer.scss"
+import './footer.scss'
 
 export default class Footer extends Component {
   render() {
@@ -20,9 +20,8 @@ export default class Footer extends Component {
             </div>
             <SocialIcons />
           </div>
-          <div className="clear"></div>
+          <div className="clear" />
         </div>
-
       </div>
     )
   }

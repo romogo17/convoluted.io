@@ -1,95 +1,94 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import React, { Component } from 'react'
 import Helmet from 'react-helmet'
+import PropTypes from 'prop-types'
 import { StaticQuery, graphql } from 'gatsby'
+import Twitter from './twitter'
+import Facebook from './facebook'
 
-function SEO({ description, lang, meta, keywords, title }) {
-  return (
-    <StaticQuery
-      query={detailsQuery}
-      render={data => {
-        const metaDescription =
-          description || data.site.siteMetadata.description
-        return (
-          <Helmet
-            htmlAttributes={{
-              lang,
-            }}
-            title={title}
-            titleTemplate={`%s | ${data.site.siteMetadata.title}`}
-            meta={[
-              {
-                name: `description`,
-                content: metaDescription,
-              },
-              {
-                property: `og:title`,
-                content: title,
-              },
-              {
-                property: `og:description`,
-                content: metaDescription,
-              },
-              {
-                property: `og:type`,
-                content: `website`,
-              },
-              {
-                name: `twitter:card`,
-                content: `summary`,
-              },
-              {
-                name: `twitter:creator`,
-                content: data.site.siteMetadata.author,
-              },
-              {
-                name: `twitter:title`,
-                content: title,
-              },
-              {
-                name: `twitter:description`,
-                content: metaDescription,
-              },
-            ]
-              .concat(
-                keywords.length > 0
-                  ? {
-                      name: `keywords`,
-                      content: keywords.join(`, `),
-                    }
-                  : []
-              )
-              .concat(meta)}
-          />
-        )
-      }}
-    />
-  )
-}
+export default class SEO extends Component {
+  render() {
+    const { title, desc, banner, pathname, article } = this.props
+    return (
+      <StaticQuery
+        query={query}
+        render={({
+          site: {
+            siteMetadata: {
+              defaultTitle,
+              shortName,
+              siteLanguage,
+              siteUrl,
+              defaultDescription,
+              defaultBanner,
+              twitter,
+            },
+          },
+        }) => {
+          const seo = {
+            title: title || defaultTitle,
+            description: desc || defaultDescription,
+            image: banner || `${siteUrl}${defaultBanner}`,
+            url: `${siteUrl}${pathname || '/'}`,
+          }
+          console.log({ seo }, { article })
 
-SEO.defaultProps = {
-  lang: `en`,
-  meta: [],
-  keywords: [],
+          return (
+            <>
+              <Helmet title={seo.title} titleTemplate={`%s | ${defaultTitle}`}>
+                <html lang={siteLanguage} />
+                <meta name="description" content={seo.description} />
+                <meta name="image" content={seo.image} />
+                <meta name="apple-mobile-web-app-title" content={shortName} />
+                <meta name="application-name" content={shortName} />
+              </Helmet>
+              <Facebook
+                desc={seo.description}
+                image={seo.image}
+                title={seo.title}
+                type={article ? 'article' : null}
+                url={seo.url}
+              />
+              <Twitter
+                title={seo.title}
+                image={seo.image}
+                desc={seo.description}
+                username={twitter}
+              />
+            </>
+          )
+        }}
+      />
+    )
+  }
 }
 
 SEO.propTypes = {
-  description: PropTypes.string,
-  lang: PropTypes.string,
-  meta: PropTypes.array,
-  keywords: PropTypes.arrayOf(PropTypes.string),
-  title: PropTypes.string.isRequired,
+  title: PropTypes.string,
+  desc: PropTypes.string,
+  banner: PropTypes.string,
+  pathname: PropTypes.string,
+  article: PropTypes.bool,
 }
 
-export default SEO
+SEO.defaultProps = {
+  title: null,
+  desc: null,
+  banner: null,
+  pathname: null,
+  article: false,
+}
 
-const detailsQuery = graphql`
-  query DefaultSEOQuery {
+const query = graphql`
+  query SEO {
     site {
       siteMetadata {
-        title
-        description
-        author
+        defaultTitle: title
+        shortName
+        siteLanguage
+        siteUrl: url
+        defaultDescription: description
+        defaultBanner: banner
+        twitter
       }
     }
   }

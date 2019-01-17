@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
-import { StaticQuery, graphql } from "gatsby"
+import { StaticQuery, graphql } from 'gatsby'
 import SocialIcons from './social-icons'
 import links from './menu-links.json'
-import "./burger-menu.scss"
+import './burger-menu.scss'
 
 // const emojiStyle = {
 //   width: 20,
@@ -12,7 +12,7 @@ import "./burger-menu.scss"
 export default class BurgerMenu extends Component {
   toggle() {
     this.setState({
-      open: !(this.state && this.state.open)
+      open: !(this.state && this.state.open),
     })
   }
 
@@ -22,28 +22,29 @@ export default class BurgerMenu extends Component {
 
     return (
       <StaticQuery
-        query={
-          graphql`
-            query {
-              file(relativePath: { eq: "convoluted-icon.png" }) {
-                childImageSharp {
-                  original {
-                    src
-                  }
+        query={graphql`
+          query {
+            file(relativePath: { eq: "convoluted-icon.png" }) {
+              childImageSharp {
+                original {
+                  src
                 }
               }
             }
-          `
-        }
+          }
+        `}
         render={data => (
           <div className={classes.join(' ')}>
-            <div className="hamburger" onClick={() => this.toggle()}></div>
-              <div className="header">
-                <h1>
-                  <img src={data.file.childImageSharp.original.src} alt="Profile" />
-                  <a href="/">convoluted.io</a>
-                </h1>
-              </div>
+            <div className="hamburger" onClick={() => this.toggle()} />
+            <div className="header">
+              <h1>
+                <img
+                  src={data.file.childImageSharp.original.src}
+                  alt="Profile"
+                />
+                <a href="/">convoluted.io</a>
+              </h1>
+            </div>
 
             <div className="burger-content">
               <h2>Menu</h2>

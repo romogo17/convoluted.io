@@ -1,15 +1,15 @@
-import React, { Component } from "react"
-import "./newsletter.scss"
-import "./rainbow.scss"
+import React, { Component } from 'react'
+import './newsletter.scss'
+import './rainbow.scss'
 
 export default class Newsletter extends Component {
   submit() {
     this.formEl.setAttribute(
-      "action",
-      "//roadbeats.us14.list-manage.com/subscribe/post?u=9fe3d3623b0c1f52fa42d45f3&amp;id=bdb32a67af"
+      'action',
+      '//roadbeats.us14.list-manage.com/subscribe/post?u=9fe3d3623b0c1f52fa42d45f3&amp;id=bdb32a67af'
     )
-    this.formEl.method = "POST"
-    this.formEl.target = "_blank"
+    this.formEl.method = 'POST'
+    this.formEl.target = '_blank'
     this.formEl.submit()
   }
 

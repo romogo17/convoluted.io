@@ -1,11 +1,11 @@
 {
-  "name": "gatsby-starter-default",
+  "name": "convoluted.io",
   "private": true,
-  "description": "A simple starter to get up and developing quickly with Gatsby",
+  "description": "I craft software. Roberto Mora's personal website and blog.",
   "version": "0.1.0",
-  "author": "Kyle Mathews <mathews.kyle@gmail.com>",
+  "author": "Roberto Mora <romogo17@gmail.com>",
   "dependencies": {
-    "format-date": "^1.0.0",
+    "date-fns": "^1.30.1",
     "gatsby": "^2.0.91",
     "gatsby-image": "^2.0.20",
     "gatsby-plugin-google-analytics": "^2.0.9",
@@ -28,11 +28,8 @@
     "react-dom": "^16.6.3",
     "react-helmet": "^5.2.0"
   },
-  "keywords": [
-    "gatsby"
-  ],
-  "license": "MIT",
   "scripts": {
+    "genpost": "node generate-post.js",
     "build": "gatsby build",
     "develop": "gatsby develop",
     "start": "npm run develop",
@@ -40,13 +37,15 @@
     "test": "echo \"Write tests! -> https://gatsby.app/unit-testing\""
   },
   "devDependencies": {
-    "prettier": "^1.15.2"
+    "chalk": "^2.4.2",
+    "figlet": "^1.2.1",
+    "inquirer": "^6.2.1",
+    "inquirer-datepicker-prompt": "^0.4.2",
+    "prettier": "^1.15.2",
+    "slugify": "^1.3.4"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/gatsbyjs/gatsby-starter-default"
-  },
-  "bugs": {
-    "url": "https://github.com/gatsbyjs/gatsby/issues"
+    "url": "https://github.com/romogo17/convoluted.io"
   }
 }

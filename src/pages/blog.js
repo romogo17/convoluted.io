@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
 import Link from 'gatsby-link'
 import { graphql } from 'gatsby'
+import { format } from 'date-fns'
 // import Helmet from 'react-helmet'
-import formatDate from "format-date"
 // import Newsletter from '../components/newsletter'
 
 import SimpleLayout from '../components/simple-layout'
-import "./blog.scss"
+import './blog.scss'
 
 export default class BlogPage extends Component {
   componentWillMount() {
@@ -18,10 +18,12 @@ export default class BlogPage extends Component {
     const posts = this.props.data.allMarkdownRemark.edges.slice(1)
 
     return (
-      <SimpleLayout name="blog"
-                    location={this.props.location} // Needed for menus
-                    title="Blog">
-
+      <SimpleLayout
+        name="blog"
+        location={this.props.location} // Needed for menus
+        title="Blog"
+        desc="Blog about software engineering, deep learning, bioinformatics..."
+      >
         <h1>Blog.</h1>
         <h2>Software engineering, deep learning, bioinformatics...</h2>
 
@@ -38,19 +40,31 @@ export default class BlogPage extends Component {
 
   renderFeatured(post) {
     const css = {
-      backgroundImage: `url(${post.image})`
+      backgroundImage: `url(${post.image})`,
     }
 
     return (
       <div className="featured post">
-        <div className="image" style={css}></div>
+        <div className="image" style={css} />
 
         <div className="title">
           <h4>{post.date}</h4>
-          <h1><Link to={post.path}>{post.title}</Link></h1>
-          <h2>{post.desc}</h2>
+          <h1>
+            <Link to={post.path}>{post.title}</Link>
+          </h1>
+          <h2>{post.description}</h2>
           <Link className="arrow" to={post.path}>
-            <svg width="24px" height="12px" viewBox="0 0 24 12" data-reactid="819"><polygon points="5.6,12 7,10.6 3.7,6.9 3.7,6.9 24,6.9 24,4.9 3.7,4.9 3.7,4.9 7,1.4 5.6,0 0,5.9 " data-reactid="820"></polygon></svg>
+            <svg
+              width="24px"
+              height="12px"
+              viewBox="0 0 24 12"
+              data-reactid="819"
+            >
+              <polygon
+                points="5.6,12 7,10.6 3.7,6.9 3.7,6.9 24,6.9 24,4.9 3.7,4.9 3.7,4.9 7,1.4 5.6,0 0,5.9 "
+                data-reactid="820"
+              />
+            </svg>
           </Link>
         </div>
       </div>
@@ -60,21 +74,21 @@ export default class BlogPage extends Component {
   renderArchive(posts) {
     return (
       <div className="posts">
-        {posts.map((post, i) => this.renderArchiveLink(post.node.frontmatter, i))}
+        {posts.map((post, i) =>
+          this.renderArchiveLink(post.node.frontmatter, i)
+        )}
       </div>
     )
   }
 
-  renderArchiveLink(post, index) {
+  renderArchiveLink(post, i) {
     return (
-      <div className="post">
+      <div className="post" key={i}>
         {this.renderArchiveYear(post)}
         <div className="post-inner">
-          <div className="date">{formatDate('{month-name} {day}', new Date(post.date))}</div>
+          <div className="date">{format(new Date(post.date), 'MMM DD')}</div>
           <div className="title">
-            <Link to={post.path}>
-              {post.title}
-            </Link>
+            <Link to={post.path}>{post.title}</Link>
           </div>
         </div>
       </div>
@@ -88,7 +102,7 @@ export default class BlogPage extends Component {
 
     return (
       <div className="year">
-        {year === new Date().getFullYear() ? "read more:" : year}
+        {year === new Date().getFullYear() ? 'read more:' : year}
       </div>
     )
   }
@@ -112,7 +126,7 @@ export const query = graphql`
           }
           frontmatter {
             title
-            desc
+            description
             image
             imageHeight
             presentation
