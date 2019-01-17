@@ -7,6 +7,7 @@ path: '/blog/understanding-the-meaning-of-table-normalization'
 draft: false
 presentation: false
 hideImage: false
+imageWidth: false
 aliasPath: '/blog/database-normalization'
 ---
 

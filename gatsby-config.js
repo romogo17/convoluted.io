@@ -7,7 +7,6 @@ module.exports = {
     siteLanguage: config.siteLanguage,
     url: config.url,
     description: config.description,
-    banner: config.banner,
     twitter: config.twitter,
   },
   plugins: [
@@ -46,14 +45,66 @@ module.exports = {
       }
     },
     "gatsby-transformer-json",
-    // TODO: create the google analytics account
-    // {
-    //   resolve: `gatsby-plugin-google-analytics`,
-    //   options: {
-    //     trackingId: config.analytics
-    //   }
-    // },
-    // TODO: add the feed plugin for RSS support
+    {
+      resolve: `gatsby-plugin-google-analytics`,
+      options: {
+        trackingId: config.analytics,
+        // Puts tracking script in the head instead of the body
+        head: false,
+        // Setting this parameter is optional
+        anonymize: true,
+      }
+    },
+    {
+      resolve: `gatsby-plugin-feed`,
+      options: {
+        query: `{
+          site {
+            siteMetadata {
+              title
+              description
+              siteUrl: url
+              site_url: url
+            }
+          }
+        }`,
+        feeds: [
+          {
+            serialize: ({ query: { site, allMarkdownRemark } }) => {
+              return allMarkdownRemark.edges.map(edge => {
+                const obj = Object.assign({}, edge.node.frontmatter, {
+                  url: config.url + edge.node.frontmatter.path,
+                  guid: config.url + edge.node.frontmatter.path,
+                  custom_elements: [{ "content:encoded": edge.node.html }],
+                })
+                return obj
+              })
+            },
+            query: `{
+              allMarkdownRemark(
+                limit: 1000
+                sort: { order: DESC, fields: [frontmatter___date] }
+                filter: { frontmatter: { draft: { ne: true } } }
+              ) {
+                edges {
+                  node {
+                    html
+                    frontmatter {
+                      description
+                      title
+                      date
+                      path
+                    }
+                  }
+                }
+              }
+            }`,
+            output: "/rss.xml",
+            title: "Convoluted.io RSS Feed",
+          },
+        ],
+      },
+    },
     /**
      * Creates ImageSharp nodes from image types that are supported by the
      * Sharp image processing library

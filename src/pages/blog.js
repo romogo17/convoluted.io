@@ -110,26 +110,19 @@ export default class BlogPage extends Component {
 
 export const query = graphql`
   query BlogQuery {
-    site {
-      siteMetadata {
-        title
-      }
-    }
-
-    allMarkdownRemark(sort: { fields: [frontmatter___date], order: DESC }) {
+    allMarkdownRemark(
+      sort: { fields: [frontmatter___date], order: DESC }
+      filter: { frontmatter: { draft: { ne: true } } }
+    ) {
       edges {
         node {
           excerpt
           frontmatter {
             path
             date(formatString: "DD MMMM, YYYY")
-          }
-          frontmatter {
             title
             description
             image
-            imageHeight
-            presentation
           }
         }
       }

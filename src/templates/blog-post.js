@@ -68,8 +68,6 @@ export default class BlogPostTemplate extends Component {
   }
 
   renderImage({ frontmatter: post }) {
-    // const post = this.props.data.markdownRemark.frontmatter
-
     if (post.presentation) return null
     if (!post.image || post.hideImage || !post.image.trim())
       return <div className="post-image-space" />
@@ -122,6 +120,7 @@ export const pageQuery = graphql`
         description
         image
         imageHeight
+        imageWidth
         imageCaption
         hideImage
         presentation
@@ -139,6 +138,7 @@ export const pageQuery = graphql`
         description
         image
         imageHeight
+        imageWidth
         imageCaption
         hideImage
         presentation

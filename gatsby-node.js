@@ -5,15 +5,14 @@ exports.createPages = ({ graphql, actions }) => {
   const blogPost = path.resolve("./src/templates/blog-post.js")
 
   graphql(`{
-    allMarkdownRemark(sort: { fields: [frontmatter___date], order: DESC }, limit: 1000) {
+    allMarkdownRemark(
+      sort: { fields: [frontmatter___date], order: DESC }
+    ) {
       edges {
         node {
           frontmatter {
             aliasPath
             path
-            title
-            description
-            date(formatString: "DD MMMM, YYYY")
           }
         }
       }
@@ -34,9 +33,6 @@ exports.createPages = ({ graphql, actions }) => {
         createPage({
           path: node.frontmatter.aliasPath,
           component: blogPost,
-          // context: {
-          //   path: node.frontmatter.path
-          // }
         })
       }
     })

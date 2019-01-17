@@ -19,8 +19,12 @@ export default class SEO extends Component {
               siteLanguage,
               siteUrl,
               defaultDescription,
-              defaultBanner,
               twitter,
+            },
+          },
+          file: {
+            childImageSharp: {
+              original: { defaultBanner },
             },
           },
         }) => {
@@ -30,7 +34,6 @@ export default class SEO extends Component {
             image: banner || `${siteUrl}${defaultBanner}`,
             url: `${siteUrl}${pathname || '/'}`,
           }
-          console.log({ seo }, { article })
 
           return (
             <>
@@ -87,8 +90,14 @@ const query = graphql`
         siteLanguage
         siteUrl: url
         defaultDescription: description
-        defaultBanner: banner
         twitter
+      }
+    }
+    file(relativePath: { eq: "convoluted-icon.png" }) {
+      childImageSharp {
+        original {
+          defaultBanner: src
+        }
       }
     }
   }
