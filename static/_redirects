@@ -1,0 +1,2 @@
+# Redirect default Netlify subdomain to primary domain
+https://convolutedio.netlify.com/* https://www.convoluted.io/:splat 301!
