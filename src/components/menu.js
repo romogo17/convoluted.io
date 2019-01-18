@@ -30,7 +30,9 @@ export default class Menu extends Component {
       location === l.to ? `${l.className || ''} selected` : l.className
     const render = /^\w+:/.test(l.to)
       ? this.renderGlobalLink
-      : this.renderLocalLink
+      : l.global
+        ? this.renderGlobalLink
+        : this.renderLocalLink
 
     return [
       render(l.to, l.title, l.emoji, className),

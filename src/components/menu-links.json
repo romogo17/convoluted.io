@@ -1,5 +1,11 @@
 [
   { "to": "/blog", "emoji": "📖", "title": "Blog" },
-  { "draft": "true", "to": "/software", "emoji": "💻", "title": "Software" },
+  { "to": "/software", "emoji": "💻", "title": "Software" },
+  {
+    "to": "/documents/RobertoMora_CV_EN.pdf",
+    "emoji": "📄",
+    "title": "CV",
+    "global": true
+  },
   { "to": "mailto:romogo17@gmail.com", "emoji": "💌", "title": "E-Mail" }
 ]
