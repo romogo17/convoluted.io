@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import { StaticQuery, graphql } from 'gatsby'
+import Link from 'gatsby-link'
 import SocialIcons from './social-icons'
-import links from './menu-links.json'
+import links from '../data/menu-links.json'
 import './burger-menu.scss'
 
 // const emojiStyle = {
@@ -48,8 +49,16 @@ export default class BurgerMenu extends Component {
 
             <div className="burger-content">
               <h2>Menu</h2>
-              {links.map((l, i) => this.renderLink(l, i))}
-
+              {
+                links.map((l, i) => {
+                  const renderLink = /^\w+:/.test(l.to)
+                      ? this.renderGlobalLink
+                      : l.global
+                        ? this.renderGlobalLink
+                        : this.renderLocalLink
+                  return renderLink(l, i)
+                })
+              }
               <h2 className="social-media">links</h2>
               <SocialIcons />
             </div>
@@ -59,7 +68,17 @@ export default class BurgerMenu extends Component {
     )
   }
 
-  renderLink(l, i) {
+  renderLocalLink(l, i) {
+    if (l.className === 'footer-link') return
+
+    return (
+      <Link className="button" to={l.to} key={i}>
+        {l.title}
+      </Link>
+    )
+  }
+
+  renderGlobalLink(l, i) {
     if (l.className === 'footer-link') return
 
     return (

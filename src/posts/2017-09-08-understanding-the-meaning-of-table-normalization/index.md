@@ -11,12 +11,6 @@ imageWidth: false
 aliasPath: '/blog/database-normalization'
 ---
 
-<div class="info">
-
-This post was originally published on my Medium blog. You can check it out [here](https://medium.com/@romogo17/understanding-the-meaning-of-table-normalization-bdbc8efb94b4).
-
-</div>
-
 ## An awakening tale
 
 I remember once being in a Database Design class. We were learning about table normalization and the so called Normal Forms.
@@ -58,3 +52,9 @@ This is why the professor response earlier was so interesting, _“how do I make
 I’m by no means saying you shouldn't make use of the Normal Forms, or totally forget about the normalization process, there’s a reason it exists. What I’m trying to accomplish is for you to look closely into what is it that you are doing, wonder **_why _**are you doing it that way. If you do this, the process will become much easier and understandable and you might even do a better job than if you just follow a methodical process.
 
 So next time you normalize or design a relational model for a database don't follow the process you’ve learned before. Think about its purpose, why is it that you are doing what you’re doing. Make the design comply with your business and carry out your functional dependencies; and, if you do it correctly, your database will be truly normalized.
+
+<div class="info">
+
+This post was originally published on my Medium blog. You can check it out [here](https://medium.com/@romogo17/understanding-the-meaning-of-table-normalization-bdbc8efb94b4).
+
+</div>

@@ -12,12 +12,6 @@ imageCaption: 'Configure the CMake build to use Qt'
 aliasPath: '/blog/opencv-macos'
 ---
 
-<div class="info">
-
-This post was originally published on my Medium blog. You can check it out [here](https://medium.com/@romogo17/how-to-build-and-install-from-source-opencv-with-qt-support-in-macos-921989518ab5).
-
-</div>
-
 Recently I’ve been working on an image processing research project at the University. This project has required me to use OpenCV mostly for some image processing functions. However, sometimes I’ve had to use some of its GUI functionalities, primarily the imshow() function to quickly view the resulting images.
 
 Consequently, when OpenCV became a requirement, I proceeded to install it using Homebrew:
@@ -135,3 +129,9 @@ make install
 If you followed along up to this point, congrats, you just built and installed OpenCV with Qt from source. Now your OpenCV GUI will use the Qt framework.
 
 ![imShow() window of OpenCV with Qt](https://cdn-images-1.medium.com/max/2048/1*aQgq3zxr5TNpCzU3yCgRDA.png)
+
+<div class="info">
+
+This post was originally published on my Medium blog. You can check it out [here](https://medium.com/@romogo17/how-to-build-and-install-from-source-opencv-with-qt-support-in-macos-921989518ab5).
+
+</div>

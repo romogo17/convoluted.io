@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import Link from 'gatsby-link'
 import { StaticQuery, graphql } from 'gatsby'
-import links from './menu-links.json'
+import links from '../data/menu-links.json'
 import './menu.scss'
 
 // const emojiStyle = {
@@ -62,7 +62,7 @@ export default class Menu extends Component {
 
   renderLogo(caption) {
     return (
-      <a className="logo" href="/" key={caption || 'convoluted.io'}>
+      <Link className="logo" to="/" key={caption || 'convoluted.io'}>
         <StaticQuery
           query={graphql`
             query {
@@ -85,7 +85,7 @@ export default class Menu extends Component {
             </>
           )}
         />
-      </a>
+      </Link>
     )
   }
 }

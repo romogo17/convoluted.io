@@ -42,9 +42,9 @@ yarn build && yarn serve
 
 ## 🧐 TODO
 
-- [ ] Create the `/software` page
+- [x] Create the `/software` page
 - [ ] Copy the rest of the posts
-- [ ] Check `burger-menu` render link functions
+- [x] Check `burger-menu` render link functions
 - [x] Upload a PDF of the resume (english version)
 - [x] Check RSS feed
 - [x] Add sitemap and `robots.txt`

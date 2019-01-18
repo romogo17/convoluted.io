@@ -1,0 +1,65 @@
+{
+  "recent": [
+    {
+      "title": "Alfred Waiter",
+      "link": "https://github.com/romogo17/alfred-waiter",
+      "description": "University project that consists of a simple mobile app to order food from your restaurant table. Stop waiting for the waiter to arrive!"
+    },
+    {
+      "title": "Electronic Bill to Excel",
+      "link": "https://github.com/romogo17/eb2e",
+      "description": "Simple utility to convert a group of Costa Rican electronic bills to an Excel file. This will probably be replaced for a more featured app later."
+    }
+  ],
+  "opensource": [
+    {
+      "title": "pgcv",
+      "link": "https://github.com/romogo17/pgcv",
+      "description": "PostgreSQL extension for Computer Vision from the database server. The extension implements algorithms for image segmentation, in particular: digital mammogram segmentation."
+    },
+    {
+      "title": "Giraffe Viewer",
+      "link": "https://github.com/romogo17/giraffe-viewer",
+      "description": "GUI for the Medical Imaging database propossed by the pgcv PostgreSQL extension"
+    }
+  ],
+  "websites": [
+    {
+      "title": "Agatok",
+      "link": "https://agatok.com/",
+      "description": "Simple landing page for a precision agriculture product. Right now, the page is just a way to subscribe to a mailing list about the product development"
+    }
+  ],
+  "old": [
+    {
+      "title": "Remus",
+      "link": "https://github.com/romogo17/Remus",
+      "description": "Educational Android App to help students improve their music reading ability."
+    },
+    {
+      "title": "Oracle Backup Executor",
+      "link": "https://github.com/romogo17/BackupExecutor",
+      "description": "Windows service that manages and fulfills backups made to Oracle database instances according to their backup strategy (University project)."
+    },
+    {
+      "title": "Oracle Strategy Manager",
+      "link": "https://github.com/romogo17/Strategy-Manager",
+      "description": "Windows application to create backup strategies for multiple remote Oracle instances (University project)"
+    },
+    {
+      "title": "Oracle Security Monitor",
+      "link": "https://github.com/romogo17/Oracle-Security-Monitor",
+      "description": "Windows application to check the roles anf privileges of users in an Oracle database, as well as other security policies (University project)."
+    },
+    {
+      "title": "Oracle Tablespace Monitor",
+      "link": "https://github.com/romogo17/Oracle-Tablespace-Monitor",
+      "description": "Windows application to monitor an Oracle database tablespace usage (University project)"
+    },
+    {
+      "title": "Oracle Memory Monitor",
+      "link": "https://github.com/romogo17/Oracle-Memory-Monitor",
+      "description": "Windows application to monitor an Oracle database memory usage (University project)"
+    }
+  ]
+}
