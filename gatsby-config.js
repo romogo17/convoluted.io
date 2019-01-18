@@ -51,7 +51,7 @@ module.exports = {
       options: {
         trackingId: config.analytics,
         // Puts tracking script in the head instead of the body
-        head: false,
+        head: true,
         // Setting this parameter is optional
         anonymize: true,
       }
