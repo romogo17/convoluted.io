@@ -28,7 +28,7 @@ export default class IndexPage extends Component {
         <h1 className="title">I craft software.</h1>
         <h2>
           My name is <strong>Roberto Mora</strong>. I recently founded a startup
-          named <strong>Tensorful</strong>, which is dedicated to creating data
+          named <strong>Tensorful</strong>, dedicated to building AI
           driven software solutions.
         </h2>
         <Intro />

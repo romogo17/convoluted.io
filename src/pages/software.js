@@ -86,7 +86,7 @@ export default class Software extends Component {
   renderLogo(project) {
     return (
       <div className="logo">
-        <img src={project.logo} />
+        <img src={project.logo} alt={project.title} />
       </div>
     )
   }
