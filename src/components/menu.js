@@ -61,31 +61,22 @@ export default class Menu extends Component {
   }
 
   renderLogo(caption) {
-    return (
-      <Link className="logo" to="/" key={caption || 'convoluted.io'}>
-        <StaticQuery
-          query={graphql`
+    return <Link className="logo" to="/" key={caption || 'convoluted.io'}>
+        <StaticQuery query={graphql`
             query {
               file(relativePath: { eq: "convoluted-icon.png" }) {
                 childImageSharp {
-                  original {
+                  fixed(height: 30) {
                     src
                   }
                 }
               }
             }
-          `}
-          render={data => (
+          `} render={data =>
             <>
-              <img
-                src={data.file.childImageSharp.original.src}
-                alt={caption || 'convoluted.io'}
-              />
+              <img src={data.file.childImageSharp.fixed.src} alt={caption || 'convoluted.io'} />
               {caption || 'convoluted.io'}
-            </>
-          )}
-        />
+            </>} />
       </Link>
-    )
   }
 }

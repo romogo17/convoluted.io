@@ -24,7 +24,7 @@ export default class SEO extends Component {
           },
           file: {
             childImageSharp: {
-              original: { defaultBanner },
+              fixed: { defaultBanner },
             },
           },
         }) => {
@@ -95,7 +95,7 @@ const query = graphql`
     }
     file(relativePath: { eq: "convoluted-icon.png" }) {
       childImageSharp {
-        original {
+        fixed(height: 300) {
           defaultBanner: src
         }
       }
