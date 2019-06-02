@@ -1,4 +1,5 @@
 const config = require('./config')
+const path = require('path')
 
 module.exports = {
   siteMetadata: {
@@ -26,26 +27,23 @@ module.exports = {
       resolve: `gatsby-source-filesystem`,
       options: {
         name: `images`,
-        path: `${__dirname}/src/images`,
+        path: path.join(__dirname, `src`, `images`),
       },
     },
     {
       resolve: `gatsby-source-filesystem`,
       options: {
         name: `posts`,
-        path: `${__dirname}/src/posts`,
+        path: path.join(__dirname, `src`, `posts`),
       },
     },
     {
-      resolve: "gatsby-transformer-remark",
+      resolve: 'gatsby-transformer-remark',
       options: {
-        plugins: [
-          `gatsby-remark-prismjs`,
-          `gatsby-remark-katex`
-        ]
-      }
+        plugins: [`gatsby-remark-prismjs`, `gatsby-remark-katex`],
+      },
     },
-    "gatsby-transformer-json",
+    'gatsby-transformer-json',
     {
       resolve: `gatsby-plugin-google-analytics`,
       options: {
@@ -54,7 +52,7 @@ module.exports = {
         head: true,
         // Setting this parameter is optional
         anonymize: true,
-      }
+      },
     },
     {
       resolve: `gatsby-plugin-feed`,
@@ -76,7 +74,7 @@ module.exports = {
                 const obj = Object.assign({}, edge.node.frontmatter, {
                   url: config.url + edge.node.frontmatter.path,
                   guid: config.url + edge.node.frontmatter.path,
-                  custom_elements: [{ "content:encoded": edge.node.html }],
+                  custom_elements: [{ 'content:encoded': edge.node.html }],
                 })
                 return obj
               })
@@ -100,8 +98,8 @@ module.exports = {
                 }
               }
             }`,
-            output: "/rss.xml",
-            title: "Convoluted.io RSS Feed",
+            output: '/rss.xml',
+            title: 'Convoluted.io RSS Feed',
           },
         ],
       },
@@ -137,5 +135,5 @@ module.exports = {
      * This (optional) plugin enables Progressive Web App + Offline functionality
      **/
     // 'gatsby-plugin-offline',
-  ]
+  ],
 }

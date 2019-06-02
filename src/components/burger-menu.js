@@ -21,51 +21,35 @@ export default class BurgerMenu extends Component {
     const classes = ['burger-menu']
     if (this.state && this.state.open) classes.push('open')
 
-    return (
-      <StaticQuery
-        query={graphql`
+    return <StaticQuery query={graphql`
           query {
             file(relativePath: { eq: "convoluted-icon.png" }) {
               childImageSharp {
-                original {
+                fixed(height: 30) {
                   src
                 }
               }
             }
           }
-        `}
-        render={data => (
-          <div className={classes.join(' ')}>
+        `} render={data => <div className={classes.join(' ')}>
             <div className="hamburger" onClick={() => this.toggle()} />
             <div className="header">
               <h1>
-                <img
-                  src={data.file.childImageSharp.original.src}
-                  alt="Profile"
-                />
+                <img src={data.file.childImageSharp.fixed.src} alt="Profile" />
                 <a href="/">convoluted.io</a>
               </h1>
             </div>
 
             <div className="burger-content">
               <h2>Menu</h2>
-              {
-                links.map((l, i) => {
-                  const renderLink = /^\w+:/.test(l.to)
-                      ? this.renderGlobalLink
-                      : l.global
-                        ? this.renderGlobalLink
-                        : this.renderLocalLink
-                  return renderLink(l, i)
-                })
-              }
+              {links.map((l, i) => {
+                const renderLink = /^\w+:/.test(l.to) ? this.renderGlobalLink : l.global ? this.renderGlobalLink : this.renderLocalLink
+                return renderLink(l, i)
+              })}
               <h2 className="social-media">links</h2>
               <SocialIcons />
             </div>
-          </div>
-        )}
-      />
-    )
+          </div>} />
   }
 
   renderLocalLink(l, i) {

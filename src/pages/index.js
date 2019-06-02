@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { graphql } from 'gatsby'
 import Intro from '../components/intro'
 import CenteredLayout from '../components/centered-layout'
+import Img from 'gatsby-image'
 // import Newsletter from "../components/newsletter"
 
 import './index.scss'
@@ -16,7 +17,7 @@ export default class IndexPage extends Component {
       >
         <div className="columns">
           {this.renderIntro()}
-          {this.renderPhoto(this.props.data.file.childImageSharp.original.src)}
+          {this.renderPhoto()}
         </div>
       </CenteredLayout>
     )
@@ -39,18 +40,13 @@ export default class IndexPage extends Component {
   }
 
   renderPhoto(src) {
-    return (
-      <div className="right column">
-        <img
-          alt="Profile"
+    return <div className="right column">
+        <Img
+          alt="Roberto's Profile Image"
           className="profile-picture"
-          src={
-            src ||
-            'https://farm5.staticflickr.com/4879/31742762527_9b17a4e93d_b.jpg'
-          }
+          fluid={this.props.data.file.childImageSharp.fluid}
         />
       </div>
-    )
   }
 }
 
@@ -58,8 +54,8 @@ export const query = graphql`
   query IndexPageQuery {
     file(relativePath: { eq: "profile-picture.png" }) {
       childImageSharp {
-        original {
-          src
+        fluid {
+          ...GatsbyImageSharpFluid
         }
       }
     }

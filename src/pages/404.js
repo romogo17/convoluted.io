@@ -33,20 +33,20 @@ export default class NotFoundPage extends Component {
     )
   }
 
-  renderPhoto(src) {
-    return (
-      <div className="right column">
-        <img
-          alt="Profile"
-          className="profile-picture"
-          src={
-            src ||
-            'https://farm5.staticflickr.com/4879/31742762527_9b17a4e93d_b.jpg'
-          }
-        />
-      </div>
-    )
-  }
+  // renderPhoto(src) {
+  //   return (
+  //     <div className="right column">
+  //       <img
+  //         alt="Profile"
+  //         className="profile-picture"
+  //         src={
+  //           src ||
+  //           'https://farm5.staticflickr.com/4879/31742762527_9b17a4e93d_b.jpg'
+  //         }
+  //       />
+  //     </div>
+  //   )
+  // }
 }
 
 // export const query = graphql`
