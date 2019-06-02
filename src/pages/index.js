@@ -27,9 +27,7 @@ export default class IndexPage extends Component {
       <div className="left column">
         <h1 className="title">I craft software.</h1>
         <h2>
-          My name is <strong>Roberto Mora</strong>. I recently founded a startup
-          named <strong>Tensorful</strong>, dedicated to building AI
-          driven software solutions.
+          My name is <strong>Roberto Mora</strong>.
         </h2>
         <Intro />
         {/* <div className="inline-newsletter">
