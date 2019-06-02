@@ -42,7 +42,7 @@ export default class IndexPage extends Component {
   renderPhoto(src) {
     return <div className="right column">
         <Img
-          alt="Roberto's Profile Image"
+          alt="Roberto's Profile Picture"
           className="profile-picture"
           fluid={this.props.data.file.childImageSharp.fluid}
         />
