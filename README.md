@@ -1,60 +1,47 @@
-<p align="center">
-  <a href="https://convoluted.io">
-    <img alt="Convoluted.io" src="./src/images/convoluted-icon.png" width="60" />
-  </a>
-  <a href="https://www.gatsbyjs.org">
-    <img alt="Gatsby" src="https://www.gatsbyjs.org/monogram.svg" width="60" />
-  </a>
-</p>
-<h1 align="center">
-  Convoluted.io
-</h1>
+# Astro Starter Kit: Minimal
 
-This is Roberto Mora's personal website. This pages consists of a blog, portfolios and contact information for Roberto.
-
-Convoluted.io can be seen as a live CV + tech blog
-
-## 🚀 Develop
-
-1.  **Start the development server**
-
-```sh
-yarn start
+```
+npm create astro@latest -- --template minimal
 ```
 
-2.  **Generate a new blog post**
+[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/minimal)
+[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/astro/tree/latest/examples/minimal)
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/withastro/astro?devcontainer_path=.devcontainer/minimal/devcontainer.json)
 
-```sh
-yarn genpost
+> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+
+## 🚀 Project Structure
+
+Inside of your Astro project, you'll see the following folders and files:
+
+```
+/
+├── public/
+├── src/
+│   └── pages/
+│       └── index.astro
+└── package.json
 ```
 
-3.  **Format the code**
+Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
 
-```sh
-yarn format
-```
+There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
 
-4.  **Build the static site and serve it locally**
+Any static assets, like images, can be placed in the `public/` directory.
 
-```sh
-yarn build && yarn serve
-```
+## 🧞 Commands
 
-## 🧐 TODO
+All commands are run from the root of the project, from a terminal:
 
-- [x] Create the `/software` page
-- [ ] Copy the rest of the posts
-- [x] Check `burger-menu` render link functions
-- [x] Upload a PDF of the resume (english version)
-- [x] Check RSS feed
-- [x] Add sitemap and `robots.txt`
-- [x] Check Google Analytics
-- [x] Set up DNS records and netlify redirects
+| Command                   | Action                                           |
+| :------------------------ | :----------------------------------------------- |
+| `npm install`             | Installs dependencies                            |
+| `npm run dev`             | Starts local dev server at `localhost:3000`      |
+| `npm run build`           | Build your production site to `./dist/`          |
+| `npm run preview`         | Preview your build locally, before deploying     |
+| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
+| `npm run astro -- --help` | Get help using the Astro CLI                     |
 
-## 💫 Deploy
+## 👀 Want to learn more?
 
-<div align="center">
-
-[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/romogo17/convoluted.io)
-
-</div>
+Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).

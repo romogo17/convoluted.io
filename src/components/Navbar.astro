@@ -1,0 +1,18 @@
+---
+import ThemeToggle from './ThemeToggle.astro'
+import Menu from './Menu.astro'
+---
+
+<div class="navbar bg-base-100">
+    <div class="navbar-start">
+        <Menu />
+    </div>
+
+    <div class="navbar-center">
+        <a class="normal-case text-xl font-semibold hover:font-bold">convoluted.io</a>
+    </div>
+
+    <div class="navbar-end">
+        <ThemeToggle />
+    </div>
+</div>

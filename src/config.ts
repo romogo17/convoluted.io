@@ -1,0 +1,2 @@
+export const SITE_TITLE = 'convoluted.io';
+export const SITE_DESCRIPTION = 'convoluted.io is Roberto Mora\'s personal portfolio and blog, a site to share original articles about DevOps and Software Engineering';
