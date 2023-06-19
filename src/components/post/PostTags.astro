@@ -1,0 +1,18 @@
+---
+export interface Props {
+    tags: string[]
+}
+
+const { tags } = Astro.props
+---
+
+<div class="mt-10 mb-2 text-xs font-mono">
+    {       
+        tags.map((tag, i) => (
+            <>  
+                <!-- display: inline -->
+                <a href="#" class="no-underline hover:underline">{tag}</a>{i !== tags.length - 1 ? ', ' : null}
+            </>
+        ))
+    }
+</div>

@@ -1,0 +1,42 @@
+---
+import type { CollectionEntry } from 'astro:content'
+import { Image } from '@astrojs/image/components'
+
+interface Props {
+    post: CollectionEntry<'posts'>
+}
+
+const {
+    post: {
+        slug,
+        data: { title, image, description, badge, tags },
+    },
+} = Astro.props
+---
+
+<div class="rounded-lg bg-base-100 hover:shadow-xl transition ease-in-out hover:scale-[102%]">
+    <a href={'/posts/' + slug}>
+        <div class="hero-content flex-col md:flex-row">
+            <Image
+                src={image.src}
+                alt={image.alt}
+                aspectRatio="16:9"
+                width={750}
+                height={422}
+                format="webp"
+                class="max-w-full md:max-w-[13rem] rounded-lg"
+            />
+
+            <div class="grow w-full">
+                <h1 class="text-xl font-bold">
+                    {title}
+                    {badge && <div class="badge badge-secondary mx-2">{badge}</div>}
+                </h1>
+                <p class="py-1">{description}</p>
+                <div class="card-actions justify-end py-1">
+                    {tags && tags.map((tag) => <div class="badge badge-outline">{tag}</div>)}
+                </div>
+            </div>
+        </div>
+    </a>
+</div>

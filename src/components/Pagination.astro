@@ -1,0 +1,27 @@
+---
+import type { Page } from 'astro'
+
+interface Props {
+    page: Page
+}
+
+const { page } = Astro.props
+---
+
+{
+    page.url.prev || page.url.next ? (
+        <div class="join justify-center items-center">
+            {page.url.prev ? (
+                <a class="join-item btn" href={page.url.prev}>
+                    «
+                </a>
+            ) : null}
+            <a class="join-item btn">Page {page.currentPage}</a>
+            {page.url.next ? (
+                <a class="join-item btn" href={page.url.next}>
+                    »
+                </a>
+            ) : null}
+        </div>
+    ) : null
+}

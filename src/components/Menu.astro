@@ -1,3 +1,16 @@
+---
+interface MenuItem {
+    name: string
+    href: string
+}
+
+const menuItems: MenuItem[] = [
+    { name: 'Blog', href: '/blog' },
+    { name: 'Projects', href: '/projects' },
+    { name: 'Resume', href: '/resume' },
+]
+---
+
 <div class="dropdown">
     <label tabindex="0" class="btn btn-link text-base-content hover:text-accent">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"
@@ -5,11 +18,13 @@
             ></path></svg
         >
     </label>
-    <!-- <ul tabindex="0" class="menu menu-sm dropdown-content p-2 w-52 shadow-[3px_3px_0px_0px] shadow-base-content border-2 border-base-content bg-secondary rounded-box"> -->
-    <ul tabindex="0" class="menu menu-sm dropdown-content p-2 w-53 border border-accent rounded-box">
-        <li><a>Home</a></li>
-        <li><a>Projects</a></li>
-        <li><a>Blog</a></li>
-        <li><a>About (Resume)</a></li>
+    <ul tabindex="0" class="menu menu-sm dropdown-content p-2 w-53 border border-accent rounded-box bg-base-200">
+        {
+            menuItems.map((item) => (
+                <li>
+                    <a href={item.href}>{item.name}</a>
+                </li>
+            ))
+        }
     </ul>
 </div>
