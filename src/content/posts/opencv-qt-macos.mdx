@@ -16,7 +16,7 @@ publishDate: 2018-05-03
 updatedDate: 2023-06-19
 ---
 
-Recently I’ve been working on an image processing research project at the University. This project has required me to use OpenCV mostly for some image processing functions. However, sometimes I’ve had to use some of its GUI functionalities, primarily the imshow() function to quickly view the resulting images.
+Recently I've been working on an image processing research project at the University. This project has required me to use OpenCV mostly for some image processing functions. However, sometimes I've had to use some of its GUI functionalities, primarily the imshow() function to quickly view the resulting images.
 
 Consequently, when OpenCV became a requirement, I proceeded to install it using Homebrew:
 
@@ -24,9 +24,9 @@ Consequently, when OpenCV became a requirement, I proceeded to install it using 
 brew install opencv
 ```
 
-After running a simple example to show an image, yes, the image was there; but the window didn’t have any of the zooming and panning buttons I was used to in Linux. Neither it had the _(x,y)_ coordinates of the mouse pointer over the image.
+After running a simple example to show an image, yes, the image was there; but the window didn't have any of the zooming and panning buttons I was used to in Linux. Neither it had the _(x,y)_ coordinates of the mouse pointer over the image.
 
-I used it like this for a while, but after some time, this functions became a necessity for me, especially since I’m working with feature detection algorithms and I need to visually check for the centroids of the detected objects.
+I used it like this for a while, but after some time, this functions became a necessity for me, especially since I'm working with feature detection algorithms and I need to visually check for the centroids of the detected objects.
 
 I knew these GUI functions were possible by building OpenCV with Qt, so I started digging into this matter. First, I tried to check whether Homebrew had an option to install with Qt. The command to check for the options of a formula is:
 
@@ -36,7 +36,7 @@ brew options <formula>
 
 Nothing…
 
-I knew there was a formula in homebrew/science that had a “with Qt” option but I didn’t want to use this since it’s deprecated and I couldn’t find any recent instructions on how to install OpenCV with Qt. So I decided to build it and install it from source, here’s how:
+I knew there was a formula in homebrew/science that had a “with Qt” option but I didn't want to use this since it's deprecated and I couldn't find any recent instructions on how to install OpenCV with Qt. So I decided to build it and install it from source, here's how:
 
 ## Requirements
 
@@ -50,7 +50,7 @@ xcode-select --install
 
 ### Homebrew
 
-If you don’t have Homebrew installed already, paste this into a terminal:
+If you don't have Homebrew installed already, paste this into a terminal:
 
 ```bash
 /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
@@ -72,7 +72,7 @@ brew install qt5
 
 ### CMake
 
-We’re going to use CMake GUI to configure the build. You could do this from the terminal, but the GUI is a great tool for the insight it provides on possible errors.
+We're going to use CMake GUI to configure the build. You could do this from the terminal, but the GUI is a great tool for the insight it provides on possible errors.
 
 If you previously installed CMake with Homebrew remove it with:
 
