@@ -18,37 +18,59 @@
 </label>
 
 <script>
-    enum Theme {
+    enum DaisyUITheme {
         Dark = 'dracula',
         Light = 'cupcake',
     }
+    enum GiscusTheme {
+        Dark = 'dark_dimmed',
+        Light = 'light_high_contrast',
+    }
 
     const toggle: HTMLInputElement | null = document.getElementById('theme-toggle') as HTMLInputElement
-    const theme: Theme = ((): Theme => {
+    const theme: DaisyUITheme = ((): DaisyUITheme => {
         const storedTheme = typeof localStorage !== 'undefined' ? localStorage.getItem('data-theme') : null
         if (storedTheme) {
-            return storedTheme as Theme
+            return storedTheme as DaisyUITheme
         }
         if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            return Theme.Dark
+            return DaisyUITheme.Dark
         }
-        return Theme.Light
+        return DaisyUITheme.Light
     })()
 
-    toggle.checked = theme == Theme.Dark ? true : false
+    toggle.checked = theme == DaisyUITheme.Dark ? true : false
     updateTheme(theme)
 
     document.getElementById('theme-toggle')?.addEventListener('change', function handleChange(event) {
         const checkbox = event?.target as HTMLInputElement
         if (checkbox?.checked) {
-            updateTheme(Theme.Dark)
+            updateTheme(DaisyUITheme.Dark)
         } else {
-            updateTheme(Theme.Light)
+            updateTheme(DaisyUITheme.Light)
         }
     })
 
-    function updateTheme(theme: Theme) {
+    function updateTheme(theme: DaisyUITheme) {
+        // website theme
         document.querySelector('html')?.setAttribute('data-theme', theme)
         window.localStorage.setItem('data-theme', theme)
+
+        // giscus theme
+        const iframe = document.querySelector<HTMLIFrameElement>('iframe.giscus-frame')
+        const giscusTheme = theme == DaisyUITheme.Dark ? GiscusTheme.Dark : GiscusTheme.Light
+        if (iframe && iframe.contentWindow) {
+            iframe.contentWindow.postMessage(
+                {
+                    giscus: {
+                        setConfig: {
+                            theme: giscusTheme,
+                        },
+                    },
+                },
+                'https://giscus.app'
+            )
+        }
+        window.localStorage.setItem('giscus-theme', giscusTheme)
     }
 </script>

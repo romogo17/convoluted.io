@@ -3,19 +3,42 @@
 
 <div class="giscus mt-10"></div>
 
-<script
-    src="https://giscus.app/client.js"
-    data-repo="romogo17/convoluted.io"
-    data-repo-id="MDEwOlJlcG9zaXRvcnkxNjQ5ODI5NDA="
-    data-category="General"
-    data-category-id="DIC_kwDOCdVwnM4CXl-W"
-    data-mapping="og:title"
-    data-strict="0"
-    data-reactions-enabled="1"
-    data-emit-metadata="0"
-    data-input-position="top"
-    data-theme="transparent_dark"
-    data-lang="en"
-    data-loading="lazy"
-    crossorigin="anonymous"
-    async></script>
+<script>
+    enum GiscusTheme {
+        Dark = 'dark_dimmed',
+        Light = 'light_high_contrast',
+    }
+
+    const theme: GiscusTheme = ((): GiscusTheme => {
+        const storedTheme = typeof localStorage !== 'undefined' ? localStorage.getItem('giscus-theme') : null
+        if (storedTheme) {
+            return storedTheme as GiscusTheme
+        }
+        if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            return GiscusTheme.Dark
+        }
+        return GiscusTheme.Light
+    })()
+
+    let giscusAttributes = {
+        src: 'https://giscus.app/client.js',
+        'data-repo': 'romogo17/convoluted.io',
+        'data-repo-id': 'MDEwOlJlcG9zaXRvcnkxNjQ5ODI5NDA=',
+        'data-category': 'General',
+        'data-category-id': 'DIC_kwDOCdVwnM4CXl-W',
+        'data-mapping': 'og:title',
+        'data-strict': '0',
+        'data-reactions-enabled': '1',
+        'data-emit-metadata': '0',
+        'data-input-position': 'top',
+        'data-theme': theme,
+        'data-lang': 'en',
+        'data-loading': 'lazy',
+        crossorigin: 'anonymous',
+        async: '',
+    }
+
+    let giscusScript = document.createElement('script')
+    Object.entries(giscusAttributes).forEach(([key, value]) => giscusScript.setAttribute(key, value))
+    document.body.appendChild(giscusScript)
+</script>
