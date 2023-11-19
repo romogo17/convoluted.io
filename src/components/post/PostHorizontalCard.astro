@@ -1,6 +1,6 @@
 ---
 import type { CollectionEntry } from 'astro:content'
-import { Image } from '@astrojs/image/components'
+import { Image } from 'astro:assets'
 
 interface Props {
     post: CollectionEntry<'posts'>
@@ -9,7 +9,7 @@ interface Props {
 const {
     post: {
         slug,
-        data: { title, image, description, badge, tags },
+        data: { title, cover, description, badge, tags },
     },
 } = Astro.props
 ---
@@ -18,11 +18,9 @@ const {
     <a href={'/posts/' + slug}>
         <div class="hero-content flex-col md:flex-row">
             <Image
-                src={image.src}
-                alt={image.alt}
-                aspectRatio="16:9"
+                src={cover.image}
+                alt={cover.alt}
                 width={750}
-                height={422}
                 format="webp"
                 class="max-w-full md:max-w-[13rem] rounded-lg"
             />
