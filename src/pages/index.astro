@@ -1,17 +1,400 @@
 ---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PostCard from '../components/PostCard.astro';
 
+const allPosts = await getCollection('blog');
+const posts = allPosts.sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
+
+const featuredPost = posts.find(p => p.data.featured) ?? posts[0];
+const gridPosts = posts.filter(p => p.id !== featuredPost?.id);
+
+function postHref(post: typeof posts[0]) {
+  return `/writing/${post.id.replace(/\.(md|mdx)$/, '')}`;
+}
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<BaseLayout title="convoluted.io">
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero__inner">
+      <div class="hero__eyebrow">
+        <img src="/logo-mark.svg" width="16" height="10" alt="" aria-hidden="true" />
+        engineering, untangled
+      </div>
+
+      <h1 class="hero__headline">
+        Most systems aren't hard.<br />
+        They're just <em>tangled</em>.
+      </h1>
+
+      <p class="hero__subhead">
+        Field notes on databases, platform engineering, and the deploys that keep you up at night
+        — pulled apart one thread at a time.
+      </p>
+
+      <form class="hero__form" action="/about#subscribe" method="get">
+        <div class="hero__input-wrap">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="hero__input-icon" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+          <input
+            type="email"
+            name="email"
+            placeholder="you@domain.dev"
+            aria-label="Email address"
+            class="hero__input"
+          />
+        </div>
+        <button type="submit" class="hero__btn">Subscribe</button>
+      </form>
+      <p class="hero__nudge">~2 posts a month · no spam · unsubscribe anytime</p>
+    </div>
+  </section>
+
+  <div class="page-content">
+    <!-- Featured post -->
+    {featuredPost && (
+      <div class="featured-wrap">
+        <a href={postHref(featuredPost)} class="featured-card">
+          <div class="featured-card__body">
+            <div class="featured-card__meta">
+              <span class="featured-badge">Featured</span>
+              {featuredPost.data.tags.slice(0, 2).map(t => (
+                <span class="post-tag">#{t}</span>
+              ))}
+            </div>
+            <h2 class="featured-card__title">{featuredPost.data.title}</h2>
+            <p class="featured-card__dek">{featuredPost.data.description}</p>
+            <span class="featured-card__cta">
+              Read the post
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </span>
+          </div>
+          <div class="featured-card__art" aria-hidden="true">
+            <img src="/knot-motif.svg" class="featured-card__motif" width="320" height="64" alt="" />
+            <span class="featured-card__art-meta">
+              {featuredPost.data.minutesRead ?? '—'} min · {featuredPost.data.pubDate.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
+            </span>
+          </div>
+        </a>
+      </div>
+    )}
+
+    <!-- Post grid -->
+    {gridPosts.length > 0 && (
+      <section class="post-grid-section">
+        <h2 class="post-grid-section__heading">Latest writing</h2>
+
+        <div class="post-grid">
+          {gridPosts.map(post => (
+            <PostCard
+              title={post.data.title}
+              description={post.data.description}
+              pubDate={post.data.pubDate}
+              tags={post.data.tags}
+              minutesRead={post.data.minutesRead ?? 1}
+              href={postHref(post)}
+            />
+          ))}
+        </div>
+      </section>
+    )}
+
+    {posts.length === 0 && (
+      <div class="empty-state">
+        <p>No posts yet — the first one is almost ready.</p>
+        <p class="empty-state__hint">It's simpler than it looks — promise.</p>
+      </div>
+    )}
+  </div>
+</BaseLayout>
+
+<style>
+  /* ——— Hero ——— */
+  .hero {
+    padding: 56px 24px 48px;
+    text-align: center;
+  }
+
+  .hero__inner {
+    max-width: 760px;
+    margin: 0 auto;
+  }
+
+  .hero__eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-green-600);
+    margin-bottom: 18px;
+  }
+
+  .hero__headline {
+    font-family: var(--font-serif);
+    font-size: clamp(2.25rem, 6vw, 3.5rem);
+    line-height: 1.04;
+    color: var(--text-strong);
+    letter-spacing: -0.025em;
+    font-weight: 500;
+    margin: 0 0 18px;
+    text-wrap: balance;
+  }
+
+  .hero__headline em {
+    font-style: italic;
+    color: var(--color-green-600);
+  }
+
+  .hero__subhead {
+    font-size: 1.1875rem;
+    line-height: 1.6;
+    color: var(--text-muted);
+    max-width: 560px;
+    margin: 0 auto 26px;
+  }
+
+  .hero__form {
+    display: flex;
+    gap: 8px;
+    max-width: 420px;
+    margin: 0 auto;
+  }
+
+  .hero__input-wrap {
+    flex: 1;
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .hero__input-icon {
+    position: absolute;
+    left: 12px;
+    color: var(--text-faint);
+    pointer-events: none;
+    flex-shrink: 0;
+  }
+
+  .hero__input {
+    width: 100%;
+    height: 40px;
+    padding: 0 12px 0 38px;
+    background: var(--surface-raised);
+    border: 1.5px solid var(--border-default);
+    border-radius: 11px;
+    font-family: var(--font-body);
+    font-size: 14px;
+    color: var(--text-body);
+    transition: border-color 120ms var(--ease-out), box-shadow 120ms var(--ease-out);
+  }
+
+  .hero__input:focus {
+    outline: none;
+    border-color: var(--border-accent);
+    box-shadow: var(--ring-focus);
+  }
+
+  .hero__btn {
+    height: 40px;
+    padding: 0 18px;
+    background: var(--accent);
+    color: var(--color-paper-50);
+    font-family: var(--font-ui);
+    font-size: 14px;
+    font-weight: 600;
+    border: none;
+    border-radius: 11px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 120ms var(--ease-out), transform 120ms var(--ease-out);
+  }
+
+  .hero__btn:hover { background: var(--accent-hover); }
+  .hero__btn:active { transform: translateY(1px); }
+
+  .hero__nudge {
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    color: var(--text-faint);
+    margin-top: 11px;
+    margin-bottom: 0;
+  }
+
+  /* ——— Page content ——— */
+  .page-content {
+    max-width: var(--container-page);
+    margin: 0 auto;
+    padding: 0 24px 48px;
+  }
+
+  /* ——— Featured card ——— */
+  .featured-wrap { margin-bottom: 48px; }
+
+  .featured-card {
+    display: grid;
+    grid-template-columns: 1.25fr 1fr;
+    border: 1.5px solid var(--color-green-200);
+    border-radius: 16px;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    background: var(--surface-card);
+    box-shadow: var(--shadow-sm);
+    transition: box-shadow 200ms var(--ease-out), border-color 200ms var(--ease-out);
+  }
+
+  .featured-card:hover {
+    box-shadow: var(--shadow-lg);
+    border-color: var(--color-green-300);
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .featured-card__body {
+    padding: 30px 32px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .featured-card__meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+  }
+
+  .featured-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--color-green-700);
+    background: var(--color-green-100);
+    border: 1px solid var(--color-green-200);
+    border-radius: 999px;
+    padding: 3px 10px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .featured-badge::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-green-500);
+    flex-shrink: 0;
+  }
+
+  .post-tag {
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    color: var(--color-ink-600);
+  }
+
+  .featured-card__title {
+    font-family: var(--font-serif);
+    font-size: clamp(1.5rem, 3vw, 2.125rem);
+    line-height: 1.1;
+    color: var(--text-strong);
+    letter-spacing: -0.02em;
+    font-weight: 500;
+    margin: 0 0 12px;
+    text-wrap: balance;
+  }
+
+  .featured-card__dek {
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--text-body);
+    margin: 0 0 20px;
+    flex: 1;
+  }
+
+  .featured-card__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    height: 38px;
+    padding: 0 16px;
+    background: var(--accent);
+    color: var(--color-paper-50);
+    font-family: var(--font-ui);
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 11px;
+    align-self: flex-start;
+    transition: background 120ms var(--ease-out);
+  }
+
+  .featured-card:hover .featured-card__cta { background: var(--accent-hover); }
+
+  .featured-card__art {
+    background: linear-gradient(150deg, var(--color-green-600), var(--color-green-800));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    min-height: 180px;
+  }
+
+  .featured-card__motif {
+    width: 115%;
+    filter: brightness(0) invert(1);
+    opacity: 0.85;
+  }
+
+  .featured-card__art-meta {
+    position: absolute;
+    bottom: 18px;
+    right: 20px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.75);
+  }
+
+  /* ——— Post grid ——— */
+  .post-grid-section__heading {
+    font-family: var(--font-serif);
+    font-size: 1.5rem;
+    color: var(--text-strong);
+    margin: 0 0 20px;
+    font-weight: 500;
+  }
+
+  .post-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
+  }
+
+  /* ——— Empty state ——— */
+  .empty-state {
+    text-align: center;
+    padding: 64px 24px;
+    color: var(--text-muted);
+  }
+
+  .empty-state__hint {
+    font-family: var(--font-serif);
+    font-style: italic;
+    color: var(--text-faint);
+  }
+
+  /* ——— Responsive ——— */
+  @media (max-width: 640px) {
+    .featured-card {
+      grid-template-columns: 1fr;
+    }
+    .featured-card__art { min-height: 120px; }
+    .hero__form { flex-direction: column; }
+    .hero__btn { width: 100%; }
+  }
+</style>

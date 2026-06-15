@@ -1,0 +1,211 @@
+---
+title: "Untangling Postgres connection pools"
+description: "Your p99 didn't spike because the query got slower. It spiked because something upstream ran out of connections and started a queue. Here's how to find it and fix it with PgBouncer."
+pubDate: 2026-05-12
+tags: ["databases", "postgres", "devops"]
+featured: true
+---
+
+import Callout from '../../components/prose/Callout.astro';
+import Terminal from '../../components/prose/Terminal.astro';
+
+Every few weeks someone drops a graph in the incident channel: p99 latency, flat all day, then a cliff straight up at 5pm. The queries didn't change. The data didn't change. So what did?
+
+Almost always, it's the **connection pool** — the part of the stack nobody looks at because it's working right up until it isn't.
+
+## The mental model
+
+A Postgres connection is expensive. Each one is a real OS process with its own memory. So you don't hand them out per-request; you keep a **pool** of them and lend them out. The trouble starts when more requests want a connection than the pool can offer.
+
+{/* Animated diagram: requests → pool → server */}
+<figure class="pool-diagram" aria-label="Connection pool flow diagram">
+  <svg viewBox="0 0 560 160" xmlns="http://www.w3.org/2000/svg" class="pool-diagram__svg">
+    {/* Requests */}
+    <g class="pd-requests">
+      <rect x="8" y="20"  width="90" height="28" rx="6" class="pd-req-box" />
+      <rect x="8" y="66"  width="90" height="28" rx="6" class="pd-req-box" />
+      <rect x="8" y="112" width="90" height="28" rx="6" class="pd-req-box" />
+      <text x="53" y="39"  class="pd-label">request</text>
+      <text x="53" y="85"  class="pd-label">request</text>
+      <text x="53" y="131" class="pd-label">request</text>
+    </g>
+
+    {/* Arrows: requests → pool */}
+    <g class="pd-arrows-in">
+      <path d="M98 34 L168 56" class="pd-arrow" marker-end="url(#arrowhead)" />
+      <path d="M98 80 L168 80" class="pd-arrow" marker-end="url(#arrowhead)" />
+      <path d="M98 126 L168 104" class="pd-arrow" marker-end="url(#arrowhead)" />
+    </g>
+
+    {/* Pool */}
+    <g class="pd-pool">
+      <rect x="172" y="40" width="120" height="80" rx="10" class="pd-pool-box" />
+      <text x="232" y="76"  class="pd-pool-label">pool</text>
+      <text x="232" y="94" class="pd-pool-sublabel">20 conns</text>
+    </g>
+
+    {/* Arrows: pool → servers */}
+    <g class="pd-arrows-out">
+      <path d="M292 60 L362 40" class="pd-arrow pd-arrow--out" marker-end="url(#arrowhead-out)" />
+      <path d="M292 80 L362 80" class="pd-arrow pd-arrow--out" marker-end="url(#arrowhead-out)" />
+      <path d="M292 100 L362 120" class="pd-arrow pd-arrow--out" marker-end="url(#arrowhead-out)" />
+    </g>
+
+    {/* Servers */}
+    <g class="pd-servers">
+      <rect x="366" y="20"  width="100" height="28" rx="6" class="pd-server-box" />
+      <rect x="366" y="66"  width="100" height="28" rx="6" class="pd-server-box" />
+      <rect x="366" y="112" width="100" height="28" rx="6" class="pd-server-box" />
+      <text x="416" y="39"  class="pd-label pd-label--server">postgres</text>
+      <text x="416" y="85"  class="pd-label pd-label--server">postgres</text>
+      <text x="416" y="131" class="pd-label pd-label--server">postgres</text>
+    </g>
+
+    {/* Markers */}
+    <defs>
+      <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+        <path d="M0 0 L8 3 L0 6 Z" fill="#756E60" />
+      </marker>
+      <marker id="arrowhead-out" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+        <path d="M0 0 L8 3 L0 6 Z" fill="#3A8856" />
+      </marker>
+    </defs>
+  </svg>
+  <figcaption>Each request borrows a connection from the pool and returns it when done. The pool size is your ceiling.</figcaption>
+</figure>
+
+<Callout tone="tip">
+  The pool isn't a performance optimization you bolt on later. It's a queue. And like every queue, its behavior under load is the whole story.
+</Callout>
+
+When the pool is exhausted, new requests don't fail — they **wait**. That wait is invisible to your query timing and very visible to your users. Here's the part that bit us:
+
+<Terminal filename="pgbouncer.ini" animate>
+
+```ini
+[databases]
+app = host=10.0.0.5 port=5432 dbname=app
+
+[pgbouncer]
+; this single line cut our p99 in half
+pool_mode = transaction
+default_pool_size = 20
+max_client_conn = 2000
+```
+
+</Terminal>
+
+## Why transaction mode wins
+
+In **session** mode, a client holds its server connection for the entire session — including the long stretches where it's doing nothing but thinking. In **transaction** mode, the connection goes back to the pool the instant a transaction commits. Same hardware, many times the throughput.
+
+- Reads that were queuing now find a free connection immediately.
+- Idle clients stop hoarding server processes.
+- Your `default_pool_size` can stay small and sane.
+
+> A healthy pool is mostly empty. If yours is always full, you don't have a tuning problem — you have a queueing problem wearing a tuning costume.
+
+<Callout tone="warning">
+  Transaction mode breaks features that rely on session state — `SET`, advisory locks, prepared statements without care. Read the [PgBouncer compatibility guide](https://www.pgbouncer.org/features.html) before you flip it in prod.
+</Callout>
+
+## The one-line fix, in context
+
+We didn't add hardware. We didn't rewrite a single query. We changed `pool_mode` and watched the cliff flatten into a gentle hill. The system was never slow — it was just tangled, and one thread was all it took to loosen the knot.
+
+Next time the graph spikes, don't start with the query plan. Start with the queue.
+
+<style>{`
+  .pool-diagram {
+    margin: 2rem 0;
+    background: var(--color-paper-200, #F4F0E6);
+    border-radius: 12px;
+    padding: 24px;
+    overflow: hidden;
+  }
+
+  .pool-diagram__svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .pd-req-box {
+    fill: var(--color-paper-50, #FDFCF8);
+    stroke: var(--color-paper-400, #DED7C5);
+    stroke-width: 1.5;
+  }
+
+  .pd-pool-box {
+    fill: var(--color-green-50, #ECF4EE);
+    stroke: var(--color-green-300, #7FBA93);
+    stroke-width: 2;
+  }
+
+  .pd-server-box {
+    fill: var(--color-green-100, #D6E9DC);
+    stroke: var(--color-green-400, #54A06F);
+    stroke-width: 1.5;
+  }
+
+  .pd-label {
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 11px;
+    fill: var(--color-ink-600, #5C564B);
+    text-anchor: middle;
+    dominant-baseline: middle;
+  }
+
+  .pd-label--server { fill: var(--color-green-800, #1A4029); }
+
+  .pd-pool-label {
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 13px;
+    font-weight: 600;
+    fill: var(--color-green-700, #235638);
+    text-anchor: middle;
+    dominant-baseline: middle;
+  }
+
+  .pd-pool-sublabel {
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 10px;
+    fill: var(--color-green-600, #2E7047);
+    text-anchor: middle;
+    dominant-baseline: middle;
+  }
+
+  .pd-arrow {
+    fill: none;
+    stroke: var(--color-ink-400, #968F7E);
+    stroke-width: 1.5;
+    stroke-dasharray: 5 3;
+    animation: dash-flow 2s linear infinite;
+  }
+
+  .pd-arrow--out {
+    stroke: var(--color-green-400, #54A06F);
+    animation-delay: 0.4s;
+  }
+
+  @keyframes dash-flow {
+    to { stroke-dashoffset: -16; }
+  }
+
+  /* Stagger request boxes */
+  .pd-requests rect:nth-child(1) { animation: req-in 400ms 100ms var(--ease-out, cubic-bezier(0.22,1,0.36,1)) both; }
+  .pd-requests rect:nth-child(2) { animation: req-in 400ms 220ms var(--ease-out, cubic-bezier(0.22,1,0.36,1)) both; }
+  .pd-requests rect:nth-child(3) { animation: req-in 400ms 340ms var(--ease-out, cubic-bezier(0.22,1,0.36,1)) both; }
+  .pd-requests text:nth-child(4) { animation: req-in 400ms 100ms var(--ease-out, cubic-bezier(0.22,1,0.36,1)) both; }
+  .pd-requests text:nth-child(5) { animation: req-in 400ms 220ms var(--ease-out, cubic-bezier(0.22,1,0.36,1)) both; }
+  .pd-requests text:nth-child(6) { animation: req-in 400ms 340ms var(--ease-out, cubic-bezier(0.22,1,0.36,1)) both; }
+  .pd-pool { animation: req-in 400ms 500ms var(--ease-out, cubic-bezier(0.22,1,0.36,1)) both; }
+  .pd-servers rect:nth-child(1) { animation: req-in 400ms 650ms var(--ease-out, cubic-bezier(0.22,1,0.36,1)) both; }
+  .pd-servers rect:nth-child(2) { animation: req-in 400ms 750ms var(--ease-out, cubic-bezier(0.22,1,0.36,1)) both; }
+  .pd-servers rect:nth-child(3) { animation: req-in 400ms 850ms var(--ease-out, cubic-bezier(0.22,1,0.36,1)) both; }
+
+  @keyframes req-in {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+`}</style>

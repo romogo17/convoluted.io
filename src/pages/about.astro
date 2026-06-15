@@ -1,0 +1,265 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="About" description="Roberto Mora — platform engineer and writer behind convoluted.io.">
+  <div class="page">
+    <!-- Intro -->
+    <section class="about-hero">
+      <div class="about-hero__text">
+        <span class="eyebrow">About</span>
+        <h1 class="about-hero__name">Roberto Mora</h1>
+        <p class="about-hero__handle">Platform engineer · @romogo17</p>
+        <p class="about-hero__bio">
+          I've been paged at 3am for too many database incidents. I write convoluted.io to turn
+          hard-won lessons into something you can read with your morning coffee — before the
+          incident happens to you.
+        </p>
+        <p class="about-hero__bio">
+          I work on platform engineering: Kubernetes, databases, observability, and the CI
+          pipelines that are one bad deploy away from your weekend.
+        </p>
+      </div>
+      <div class="about-hero__avatar" aria-hidden="true">RM</div>
+    </section>
+
+    <hr class="about-divider" />
+
+    <!-- Now -->
+    <section class="about-section">
+      <h2 class="about-section__title">Now</h2>
+      <p>Building internal platforms, writing about what I learn, and occasionally untangling someone else's Terraform state.</p>
+    </section>
+
+    <!-- Topics -->
+    <section class="about-section">
+      <h2 class="about-section__title">What I write about</h2>
+      <ul class="topic-list">
+        <li><strong>Databases</strong> — Postgres, connection pools, migrations that don't hurt</li>
+        <li><strong>Platform engineering</strong> — Kubernetes, Helm, the developer experience layer</li>
+        <li><strong>DevOps</strong> — CI/CD, observability, being on-call without burning out</li>
+        <li><strong>Systems thinking</strong> — why things break, how to reason about complexity</li>
+      </ul>
+    </section>
+
+    <section class="subscribe-block" id="subscribe">
+      <img src="/knot-motif.svg" class="subscribe-block__motif" width="280" height="56" alt="" aria-hidden="true" />
+      <h2 class="subscribe-block__title">Stay in the loop</h2>
+      <p class="subscribe-block__subhead">~2 posts a month · no spam · unsubscribe anytime</p>
+      <form class="subscribe-block__form" action="#" method="post">
+        <div class="subscribe-block__input-wrap">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="subscribe-block__icon" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+          <input
+            type="email"
+            name="email"
+            placeholder="you@domain.dev"
+            aria-label="Email address"
+            class="subscribe-block__input"
+            required
+          />
+        </div>
+        <button type="submit" class="subscribe-block__btn">Subscribe</button>
+      </form>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .page {
+    max-width: var(--container-prose);
+    margin: 0 auto;
+    padding: 48px 24px 80px;
+  }
+
+  /* ——— Hero ——— */
+  .about-hero {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 32px;
+    margin-bottom: 48px;
+  }
+
+  .about-hero__text { flex: 1; }
+
+  .eyebrow { display: block; margin-bottom: 12px; }
+
+  .about-hero__name {
+    font-family: var(--font-serif);
+    font-size: 3rem;
+    line-height: 1.08;
+    font-weight: 500;
+    letter-spacing: -0.025em;
+    color: var(--text-strong);
+    margin: 0 0 6px;
+  }
+
+  .about-hero__handle {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    color: var(--color-green-700);
+    margin: 0 0 20px;
+  }
+
+  .about-hero__bio {
+    font-size: 1.0625rem;
+    line-height: 1.72;
+    color: var(--text-body);
+    margin: 0 0 16px;
+  }
+
+  .about-hero__avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: var(--color-green-100);
+    color: var(--color-green-800);
+    font-family: var(--font-mono);
+    font-size: 20px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .about-divider {
+    border: none;
+    border-top: 1px solid var(--border-subtle);
+    margin: 0 0 40px;
+  }
+
+  /* ——— Sections ——— */
+  .about-section { margin-bottom: 40px; }
+
+  .about-section__title {
+    font-family: var(--font-serif);
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: var(--text-strong);
+    margin: 0 0 14px;
+    letter-spacing: -0.01em;
+  }
+
+  .topic-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .topic-list li {
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    color: var(--text-body);
+    padding-left: 20px;
+    position: relative;
+  }
+
+  .topic-list li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--color-green-500);
+    font-weight: 600;
+  }
+
+  /* ——— Subscribe block ——— */
+  .subscribe-block {
+    margin-top: 56px;
+    padding: 36px 32px;
+    background: var(--surface-inverse);
+    border-radius: 24px;
+    color: var(--text-inverse);
+  }
+
+  .subscribe-block__motif {
+    filter: brightness(0) invert(1);
+    opacity: 0.25;
+    margin-bottom: 20px;
+    max-width: 100%;
+  }
+
+  .subscribe-block__title {
+    font-family: var(--font-serif);
+    font-size: 2rem;
+    font-weight: 500;
+    color: var(--text-inverse);
+    letter-spacing: -0.02em;
+    margin: 0 0 8px;
+  }
+
+  .subscribe-block__subhead {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: rgba(251, 249, 243, 0.55);
+    margin: 0 0 22px;
+  }
+
+  .subscribe-block__form {
+    display: flex;
+    gap: 8px;
+    max-width: 400px;
+  }
+
+  .subscribe-block__input-wrap {
+    flex: 1;
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .subscribe-block__icon {
+    position: absolute;
+    left: 12px;
+    color: rgba(251, 249, 243, 0.45);
+    pointer-events: none;
+  }
+
+  .subscribe-block__input {
+    width: 100%;
+    height: 40px;
+    padding: 0 12px 0 38px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1.5px solid rgba(255, 255, 255, 0.15);
+    border-radius: 11px;
+    font-family: var(--font-body);
+    font-size: 14px;
+    color: var(--text-inverse);
+    transition: border-color 120ms, box-shadow 120ms;
+  }
+
+  .subscribe-block__input::placeholder { color: rgba(251, 249, 243, 0.4); }
+
+  .subscribe-block__input:focus {
+    outline: none;
+    border-color: var(--color-lime-400);
+    box-shadow: 0 0 0 3px rgba(200, 227, 79, 0.2);
+  }
+
+  .subscribe-block__btn {
+    height: 40px;
+    padding: 0 18px;
+    background: var(--color-lime-400);
+    color: var(--color-ink-900);
+    font-family: var(--font-ui);
+    font-size: 14px;
+    font-weight: 700;
+    border: none;
+    border-radius: 11px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 120ms, transform 120ms;
+  }
+
+  .subscribe-block__btn:hover { background: var(--color-lime-500); }
+  .subscribe-block__btn:active { transform: translateY(1px); }
+
+  @media (max-width: 520px) {
+    .about-hero { flex-direction: column-reverse; }
+    .subscribe-block__form { flex-direction: column; }
+    .subscribe-block__btn { width: 100%; }
+  }
+</style>

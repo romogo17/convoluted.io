@@ -1,0 +1,147 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  pubDate: Date;
+  tags: string[];
+  minutesRead: number;
+  href: string;
+  featured?: boolean;
+}
+
+const { title, description, pubDate, tags, minutesRead, href, featured = false } = Astro.props;
+
+const dateStr = pubDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+---
+
+<a href={href} class:list={['post-card', { 'post-card--featured': featured }]}>
+  <div class="post-card__meta-top">
+    <div class="post-card__tags">
+      {tags.slice(0, 2).map(t => <span class="post-tag">#{t}</span>)}
+    </div>
+    <span class="post-card__read">{minutesRead} min</span>
+  </div>
+
+  <h3 class="post-card__title">{title}</h3>
+  <p class="post-card__dek">{description}</p>
+
+  <div class="post-card__author">
+    <span class="post-card__avatar" aria-hidden="true">RM</span>
+    <span class="post-card__author-name">Roberto Mora</span>
+    <span class="post-card__dot" aria-hidden="true">·</span>
+    <time class="post-card__date" datetime={pubDate.toISOString()}>{dateStr}</time>
+  </div>
+</a>
+
+<style>
+  .post-card {
+    display: flex;
+    flex-direction: column;
+    padding: 24px;
+    background: var(--surface-card);
+    border: 1px solid var(--border-default);
+    border-radius: 16px;
+    box-shadow: var(--shadow-xs);
+    text-decoration: none;
+    color: inherit;
+    transition: transform 200ms var(--ease-out), box-shadow 200ms var(--ease-out), border-color 200ms var(--ease-out);
+  }
+
+  .post-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--color-green-200);
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .post-card--featured {
+    border-color: var(--color-green-200);
+    background: color-mix(in srgb, var(--surface-card) 60%, var(--color-green-50) 40%);
+  }
+
+  .post-card__meta-top {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .post-card__tags {
+    display: flex;
+    gap: 6px;
+    flex: 1;
+  }
+
+  .post-tag {
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    color: var(--color-ink-600);
+    letter-spacing: 0.01em;
+  }
+
+  .post-card__read {
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--color-slate-700);
+    background: var(--color-slate-100);
+    border: 1px solid var(--color-slate-100);
+    border-radius: 999px;
+    padding: 3px 9px;
+    white-space: nowrap;
+  }
+
+  .post-card__title {
+    font-family: var(--font-serif);
+    font-size: 23px;
+    line-height: 1.18;
+    color: var(--text-strong);
+    margin: 0 0 8px;
+    font-weight: 500;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+  }
+
+  .post-card__dek {
+    font-size: 14.5px;
+    line-height: 1.55;
+    color: var(--text-muted);
+    margin: 0;
+    flex: 1;
+  }
+
+  .post-card__author {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin-top: 16px;
+  }
+
+  .post-card__avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--color-green-100);
+    color: var(--color-green-800);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+
+  .post-card__author-name {
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+
+  .post-card__dot { color: var(--color-paper-400); }
+
+  .post-card__date {
+    font-size: 13px;
+    color: var(--text-faint);
+  }
+</style>

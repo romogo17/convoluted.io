@@ -1,0 +1,58 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Projects" description="Open-source projects and things I've built.">
+  <div class="page">
+    <header class="page__header">
+      <span class="eyebrow">Open source</span>
+      <h1 class="page__title">Projects</h1>
+      <p class="page__subhead">Things I've built and maintain in the open.</p>
+    </header>
+
+    <div class="page__empty">
+      <p>Coming soon.</p>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .page {
+    max-width: var(--container-page);
+    margin: 0 auto;
+    padding: 48px 24px 80px;
+  }
+
+  .page__header {
+    max-width: 640px;
+    margin-bottom: 48px;
+  }
+
+  .eyebrow {
+    display: block;
+    margin-bottom: 12px;
+  }
+
+  .page__title {
+    font-family: var(--font-serif);
+    font-size: 3rem;
+    line-height: 1.08;
+    font-weight: 500;
+    letter-spacing: -0.025em;
+    color: var(--text-strong);
+    margin: 0 0 14px;
+  }
+
+  .page__subhead {
+    font-size: 1.125rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .page__empty {
+    color: var(--text-faint);
+    font-family: var(--font-serif);
+    font-style: italic;
+  }
+</style>

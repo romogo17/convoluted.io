@@ -1,0 +1,140 @@
+---
+import { Lightbulb, AlertTriangle, AlertCircle, Info } from '@lucide/astro';
+
+type Tone = 'tip' | 'warning' | 'danger' | 'info';
+
+interface Props {
+  tone?: Tone;
+  title?: string;
+}
+
+const { tone = 'tip', title } = Astro.props;
+
+const defaultTitles: Record<Tone, string> = {
+  tip: 'Tip',
+  warning: 'Watch out',
+  danger: 'Heads up',
+  info: 'Note',
+};
+
+const resolvedTitle = title ?? defaultTitles[tone];
+
+const Icon = { tip: Lightbulb, warning: AlertTriangle, danger: AlertCircle, info: Info }[tone];
+---
+
+<aside class:list={['callout', `callout--${tone}`]} data-animate>
+  <div class="callout__header">
+    <span class="callout__icon"><Icon size={16} /></span>
+    <span class="callout__title">{resolvedTitle}</span>
+  </div>
+  <div class="callout__body">
+    <slot />
+  </div>
+</aside>
+
+<style>
+  /* Entry animation — plays when .callout--visible is added by the observer */
+  @keyframes callout-in {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .callout {
+    --callout-accent: var(--color-green-500);
+    --callout-bg: var(--color-green-50);
+    --callout-border: var(--color-green-100);
+    --callout-icon: var(--color-green-600);
+    --callout-title: var(--color-green-800);
+
+    margin: 1.75rem 0;
+    padding: 16px 18px;
+    border-left: 4px solid var(--callout-accent);
+    border-radius: 0 11px 11px 0;
+    background: var(--callout-bg);
+    border-top: 1px solid var(--callout-border);
+    border-right: 1px solid var(--callout-border);
+    border-bottom: 1px solid var(--callout-border);
+
+    /* start hidden; observer adds --visible class */
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  .callout.is-visible {
+    animation: callout-in 380ms var(--ease-out, cubic-bezier(0.22, 1, 0.36, 1)) forwards;
+  }
+
+  /* Tone variants */
+  .callout--warning {
+    --callout-accent: var(--color-amber-500);
+    --callout-bg: var(--color-amber-100);
+    --callout-border: #f0d9a0;
+    --callout-icon: var(--color-amber-700);
+    --callout-title: var(--color-amber-700);
+  }
+
+  .callout--danger {
+    --callout-accent: var(--color-clay-500);
+    --callout-bg: var(--color-clay-100);
+    --callout-border: #edc4ba;
+    --callout-icon: var(--color-clay-700);
+    --callout-title: var(--color-clay-700);
+  }
+
+  .callout--info {
+    --callout-accent: var(--color-slate-500);
+    --callout-bg: var(--color-slate-100);
+    --callout-border: #c4d0e8;
+    --callout-icon: var(--color-slate-700);
+    --callout-title: var(--color-slate-700);
+  }
+
+  .callout__header {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin-bottom: 6px;
+  }
+
+  .callout__icon {
+    color: var(--callout-icon);
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  .callout__title {
+    font-family: var(--font-mono, monospace);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--callout-title);
+  }
+
+  .callout__body {
+    font-size: 0.9375rem;
+    line-height: 1.65;
+    color: var(--text-body, #433e36);
+  }
+
+  /* Strip default prose margins from slotted content */
+  .callout__body :global(p:last-child) { margin-bottom: 0; }
+  .callout__body :global(p) { margin-bottom: 0.5rem; }
+</style>
+
+<script>
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.15, rootMargin: '0px 0px -40px 0px' }
+  );
+
+  document.querySelectorAll('.callout[data-animate]').forEach((el) => observer.observe(el));
+</script>
