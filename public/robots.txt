@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://convoluted.io/sitemap-index.xml

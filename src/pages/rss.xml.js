@@ -6,8 +6,8 @@ export async function GET(context) {
   const sorted = posts.sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
   return rss({
     title: 'convoluted.io',
-    description: 'Field notes on databases, platform engineering, and the deploys that keep you up at night.',
-    site: context.site,
+    description: 'Field notes on platform engineering, distributed systems, and the deploys that keep you up at night.',
+    site: context.site ?? 'https://convoluted.io',
     items: sorted.map(post => ({
       title: post.data.title,
       pubDate: post.data.pubDate,

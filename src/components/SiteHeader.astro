@@ -26,7 +26,7 @@ const isAbout = pathname.startsWith('/about');
       </a>
       <a href="/about#subscribe" class="btn-subscribe">
         <Mail size={15} />
-        Subscribe
+        <span class="btn-subscribe__label">Subscribe</span>
       </a>
     </div>
   </div>
@@ -153,4 +153,15 @@ const isAbout = pathname.startsWith('/about');
   }
 
   .btn-subscribe:active { transform: translateY(1px); }
+
+  @media (max-width: 600px) {
+    .logo__wordmark { display: none; }
+    .site-header__inner { gap: 16px; }
+    .site-nav { gap: 14px; margin-left: 0; }
+  }
+
+  @media (max-width: 480px) {
+    .btn-subscribe__label { display: none; }
+    .btn-subscribe { width: 34px; padding: 0; justify-content: center; }
+  }
 </style>
