@@ -1,0 +1,78 @@
+---
+import { ChevronRight } from '@lucide/astro';
+
+interface Props {
+  title?: string;
+}
+const { title = 'Show more' } = Astro.props;
+---
+
+<details class="expand">
+  <summary class="expand__summary">
+    <span class="expand__chevron" aria-hidden="true">
+      <ChevronRight size={13} />
+    </span>
+    <span class="expand__label">{title}</span>
+  </summary>
+  <div class="expand__body">
+    <slot />
+  </div>
+</details>
+
+<style>
+  .expand {
+    margin: 1.25rem 0;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    background: var(--surface-card);
+    overflow: hidden;
+  }
+
+  .expand__summary {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 10px 14px;
+    font-family: var(--font-ui);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-muted);
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+    transition: color var(--dur-fast) var(--ease-out), background var(--dur-fast) var(--ease-out);
+  }
+
+  /* Hide native marker in all browsers */
+  .expand__summary::-webkit-details-marker { display: none; }
+  .expand__summary::marker { display: none; }
+
+  .expand__summary:hover {
+    color: var(--text-strong);
+    background: var(--surface-sunken);
+  }
+
+  .expand__chevron {
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+    transition: transform var(--dur-base) var(--ease-out);
+  }
+
+  .expand[open] > .expand__summary .expand__chevron {
+    transform: rotate(90deg);
+  }
+
+  .expand__label {
+    line-height: 1;
+  }
+
+  .expand__body {
+    border-top: 1px solid var(--border-subtle);
+    padding: 0 14px;
+  }
+
+  /* Collapse the first/last child's outer margin into padding */
+  .expand__body :global(> *:first-child) { margin-top: 14px; }
+  .expand__body :global(> *:last-child)  { margin-bottom: 14px; }
+</style>

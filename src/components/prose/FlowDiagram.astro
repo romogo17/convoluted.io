@@ -1,0 +1,35 @@
+---
+interface Props {
+  caption?: string;
+  label?: string;
+}
+const { caption, label = 'Flow diagram' } = Astro.props;
+---
+
+<figure class="flow-diagram" aria-label={label}>
+  <slot />
+  {caption && <figcaption>{caption}</figcaption>}
+</figure>
+
+<style>
+  .flow-diagram {
+    margin: 1.75rem 0;
+    background: var(--color-paper-200);
+    border-radius: 12px;
+    padding: 20px 24px;
+    overflow: hidden;
+  }
+
+  .flow-diagram svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .flow-diagram figcaption {
+    font-size: 0.875rem;
+    color: var(--text-faint);
+    text-align: center;
+    margin-top: 10px;
+  }
+</style>
