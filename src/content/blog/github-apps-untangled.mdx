@@ -1,0 +1,509 @@
+---
+title: 'GitHub Apps, untangled'
+description: "A PAT is a person's password by another name. GitHub Apps are the alternative built for machines: their own identity, fine-grained permissions, short-lived tokens. What a GitHub App actually is, how its two auth flows work, and which token each one mints."
+pubDate: 2026-06-21
+tags: ['github', 'platform', 'devops']
+featured: false
+---
+
+import Callout from '../../components/prose/Callout.astro';
+import Expand from '../../components/prose/Expand.astro';
+import TokenTable from '../../components/prose/TokenTable.astro';
+import FlowDiagram from '../../components/prose/FlowDiagram.astro';
+
+PATs are the obvious starting point. GitHub surfaces them first, every CI system knows how to use them, and they work well, right up until they don't. The fragility is structural: a PAT is always tied to a person, which means you're one password reset, one 2FA policy rollout, or one offboarding away from a 2am incident where nobody remembers which account the token belongs to.
+
+So what's the alternative? A GitHub App is a different kind of account. You register it once and GitHub treats it as its own actor. Not a human, not a service user wearing a human's face. It has a name, a private key it signs with, a set of permissions you declare up front, and its own line in the audit log as `your-app[bot]`. You install it onto the orgs or repositories that need it, and from then on it authenticates as itself.
+
+The payoff is that everything it hands out is short-lived and scoped to a single installation. No shared password to rotate, nobody to offboard, no 2am guessing game about whose account a token belongs to. The mental-model shift from a PAT is small. The operational improvement is not.
+
+This guide builds that model piece by piece: what an app is made of, the two ways it can authenticate, and the tokens each flow produces. Read it start to finish to understand the system, then keep it around as the reference you come back to.
+
+## Overview
+
+Three ways to authenticate automation against GitHub, side by side. This is the map for everything that follows. GitHub Apps are the destination; the other two are where you're probably coming from.
+
+<div class="overview-grid">
+  <div class="overview-card overview-card--bad">
+    <div class="overview-card__label">Classic PAT / service account</div>
+    <ul>
+      <li>Tied to a user</li>
+      <li>Long-lived credential</li>
+      <li>Broad classic scopes</li>
+      <li>One credential for everything</li>
+      <li><code>ghp_…</code></li>
+    </ul>
+  </div>
+  <div class="overview-card overview-card--good">
+    <div class="overview-card__label">GitHub App (use this)</div>
+    <ul>
+      <li>Own identity, not a user</li>
+      <li>1-hour installation tokens</li>
+      <li>Fine-grained permissions</li>
+      <li>Scoped per installation</li>
+      <li><code>ghs_…</code></li>
+    </ul>
+  </div>
+  <div class="overview-card overview-card--neutral">
+    <div class="overview-card__label">OAuth App</div>
+    <ul>
+      <li>User-tied, like a PAT</li>
+      <li>Classic OAuth scopes</li>
+      <li>No fine-grained control</li>
+      <li><code>gho_…</code></li>
+      <li>What gh CLI uses</li>
+    </ul>
+  </div>
+</div>
+
+The rest of this guide is about the middle column. OAuth Apps come back at the end, for contrast. You'll meet both in the wild, and they're easy to confuse from the outside.
+
+## The anatomy of a GitHub App
+
+A handful of ideas make up the whole model: what the app is, where it lives, what it's allowed to do, and the one optional secret. Get these straight and the auth flows follow naturally.
+
+### App vs installation
+
+The **App** is the definition: its name, keys, and declared permissions. An **Installation** is the App installed on a specific enterprise, org, or user account. Permissions live on the installation, not the app. When an admin installs your app and grants it `Enterprise teams (read)`, that grant attaches to the installation record. The app has no access to anything until it's installed somewhere.
+
+### The three identifiers
+
+An app carries three IDs, and mixing them up is the most common source of confusion:
+
+- **App ID** identifies what the app is. It's numeric, and you use it to look the app up.
+- **Client ID** is the app's public identifier (`Iv1.…` / `Iv23…`). It's what you put in the user-authorization URLs of Flow 2, and GitHub now recommends it as the issuer when signing the Flow 1 JWT (the App ID still works).
+- **Installation ID** identifies *where* the app is installed. GitHub's resource API centers on this one, because that's where the actual authorization lives. For a single-enterprise automation, discover it once, put it in config, and leave it alone; it's stable for the life of the installation.
+
+<Callout tone="tip">
+  One app can have multiple installations with different permission grants at each. A token minted from installation A cannot touch resources of installation B.
+</Callout>
+
+### Permissions vs scopes
+
+GitHub Apps use **fine-grained permissions**: resource-type-specific grants like `Enterprise teams (read)` or `Contents (write)`. OAuth Apps and classic PATs use **OAuth scopes**: broad categories like `repo` or `read:org`. These systems don't mix. A `ghs_` installation token has no concept of scopes. A `gho_` OAuth token has no concept of fine-grained permissions.
+
+### Client secret
+
+When creating a GitHub App you can skip the client secret entirely. The client secret only exists to support Flow 2 (user authorization). An app with no client secret cannot do Flow 2. For backend automations with no human in the loop, you don't need one.
+
+## The two auth flows
+
+That anatomy gives the app an identity, declared permissions, and an installation. What it still doesn't have is a token, and every API call needs one. Getting a token comes down to a single question: **is there a human in the loop?**
+
+That splits cleanly into two flows, and which one you use decides which token you get.
+
+- **Flow 1 (installation token).** The app authenticates as itself with its private key. This is the common case: CI pipelines, scheduled jobs, batch automation with no human present. Produces a `ghs_…` token.
+- **Flow 2 (user access token).** The app authenticates on behalf of a specific person, with its client secret. Reach for this when a human starts the action: dashboards, CLI tools, bots that post as the user. Produces a `ghu_…` token.
+
+The two sections below walk through each in turn.
+
+## Flow 1: App acting as itself (installation token)
+
+This is the flow you'll use most: an app running with no human attached. It proves it's itself by signing a short-lived JWT with its private key, trades that JWT for an installation token, and uses that token against the resource API. Three steps, shown in full below:
+
+<FlowDiagram label="Flow 1 token chain" caption="The private key never leaves your secrets manager. Only ghs_ touches resource endpoints.">
+<svg viewBox="0 0 600 120" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="gha-f1-a" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <path d="M0 0 L8 3 L0 6 Z" fill="#968F7E" />
+    </marker>
+    <marker id="gha-f1-ag" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <path d="M0 0 L8 3 L0 6 Z" fill="#54A06F" />
+    </marker>
+  </defs>
+
+  {/* Box 1 — private key (permanent, neutral) */}
+  <rect x="10" y="30" width="120" height="58" rx="7" class="gha-box gha-box--neutral" />
+  <text x="70" y="55" class="gha-lbl">private-key.pem</text>
+  <text x="70" y="73" class="gha-sub">permanent · PEM</text>
+
+  {/* Arrow 1 — sign RS256 */}
+  <line x1="130" y1="59" x2="192" y2="59" class="gha-line" marker-end="url(#gha-f1-a)" />
+  <text x="161" y="18" class="gha-step">sign RS256</text>
+
+  {/* Box 2 — JWT (short-lived, amber) */}
+  <rect x="194" y="30" width="90" height="58" rx="7" class="gha-box gha-box--amber" />
+  <text x="239" y="55" class="gha-lbl gha-lbl--amber">JWT (eyJ…)</text>
+  <text x="239" y="73" class="gha-sub">≤ 10 min</text>
+
+  {/* Arrow 2 — exchange for installation token */}
+  <line x1="284" y1="59" x2="365" y2="59" class="gha-line gha-line--g" marker-end="url(#gha-f1-ag)" />
+  <text x="324" y="18" class="gha-step">/access_tokens</text>
+
+  {/* Box 3 — installation token (goal, green) */}
+  <rect x="367" y="30" width="223" height="58" rx="7" class="gha-box gha-box--green" />
+  <text x="478" y="55" class="gha-lbl gha-lbl--green">ghs_… token</text>
+  <text x="478" y="73" class="gha-sub gha-sub--green">1 hr · resource APIs</text>
+</svg>
+</FlowDiagram>
+
+**Step 1: Generate a JWT.** Sign a JWT using your app's private key (RS256). Three payload fields, no more:
+
+```python title="Generate a JWT (PyJWT)"
+import time, jwt  # pip install PyJWT cryptography
+
+now = int(time.time())
+token = jwt.encode(
+    {
+        "iss": CLIENT_ID, # app's Client ID (App ID also works)
+        "iat": now - 60,  # subtract 60s as a clock-skew buffer
+        "exp": now + 600, # max 10 minutes
+    },
+    open("private-key.pem").read(),
+    algorithm="RS256",
+)
+```
+
+This JWT is only valid for the Apps API (`/app/...`). It cannot be used for repos, billing, or any resource endpoint.
+
+**Step 2: Exchange for an installation access token.** The JWT only proves you're the app; it can't touch a single repo. Trade it at the installation's `/access_tokens` endpoint for a token scoped to what that installation was granted:
+
+```python title="Exchange JWT for installation token"
+import requests  # pip install requests
+
+resp = requests.post(
+    f"https://api.github.com/app/installations/{INSTALLATION_ID}/access_tokens",
+    headers={
+        "Authorization": f"Bearer {jwt_token}",
+        "Accept": "application/vnd.github+json",
+        "X-GitHub-Api-Version": "2022-11-28",
+    },
+)
+installation_token = resp.json()["token"]  # ghs_…
+```
+
+You can optionally scope the token below what the installation was granted. Pass `repositories` or `repository_ids`, plus a narrower `permissions` map, in the request body. Different jobs, different access levels, same app.
+
+<Expand title="Optional: request body scoping">
+The body below limits a token to two specific repositories and a narrower permission set than the installation holds. Anything not listed, the token can't touch, even if the installation has broader access.
+
+```json
+{
+  "repository_ids": [111222333, 444555666],
+  "permissions": {
+    "contents": "read",
+    "pull_requests": "write"
+  }
+}
+```
+
+</Expand>
+
+GitHub returns a `ghs_…` token valid for 1 hour.
+
+**Step 3: Use the installation token.** Pass `ghs_…` as `Authorization: Bearer` on every resource API call. When it expires, restart from step 1.
+
+<Callout tone="info">
+  Each installation has its own rate limit bucket: 5,000 requests/hour. An app installed in three orgs gets 15,000 req/hr total with no sharing. That ceiling scales with your footprint. A service-account PAT is stuck with one bucket no matter how much you run through it.
+</Callout>
+
+Client libraries handle steps 1 and 2 automatically. You provide App ID, private key, and Installation ID; you get back an authenticated client that refreshes tokens internally. See [Client libraries](#client-libraries) below.
+
+## Flow 2: App acting on behalf of a user (user access token)
+
+For situations where a human is interacting with your app and it needs to act as them: dashboards, CLI tools, bots that post on a user's behalf. This flow uses the **Client ID and Client Secret**, not the private key. The private key is never involved.
+
+<Callout tone="warning">
+  The resulting <code>ghu_…</code> token is doubly constrained: by the app's installed permissions AND by what that specific user can access. It can never exceed either boundary, even if the user normally has broader access elsewhere.
+</Callout>
+
+### Web application flow
+
+The standard browser-based path, for apps that can receive a redirect. The user bounces out to GitHub's authorization page and back to your callback, and you exchange the result for a token. Three steps:
+
+1. **Redirect the user** to `https://github.com/login/oauth/authorize` with your Client ID. GitHub shows an authorization prompt.
+2. **GitHub redirects back** to your callback URL with a short-lived `?code=` parameter.
+3. **Exchange the code.** POST to `https://github.com/login/oauth/access_token` with your Client ID, Client Secret, and the code. You receive a `ghu_…` user access token, and optionally a `ghr_…` refresh token if you've enabled token expiry in your app settings.
+
+<Callout tone="tip">
+  Token expiry is opt-in in app settings. When enabled: user tokens last 8 hours, refresh tokens last 6 months. When disabled: user tokens have no expiry.
+</Callout>
+
+<Expand title="Optional: PKCE for public clients">
+GitHub supports PKCE for this flow. Add `code_challenge` (base64url-encoded SHA-256 of a random `code_verifier`) and `code_challenge_method=S256` to the authorization URL, then include `code_verifier` in the token exchange. Required for SPAs and mobile apps where a client secret can't be stored safely. Optional but worthwhile for server-side apps too.
+</Expand>
+
+<FlowDiagram label="Web application flow sequence diagram" caption="Three participants, two round trips. The short-lived code is the handoff from GitHub to your server.">
+<svg viewBox="0 0 560 320" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="gha-waf-a" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <path d="M0 0 L8 3 L0 6 Z" fill="#968F7E" />
+    </marker>
+    <marker id="gha-waf-ag" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <path d="M0 0 L8 3 L0 6 Z" fill="#54A06F" />
+    </marker>
+  </defs>
+
+  {/* Participants */}
+  <rect x="10" y="12" width="140" height="36" rx="6" class="gha-part" />
+  <text x="80" y="30" class="gha-part-lbl">Your App</text>
+  <rect x="210" y="12" width="140" height="36" rx="6" class="gha-part" />
+  <text x="280" y="30" class="gha-part-lbl">Browser</text>
+  <rect x="410" y="12" width="140" height="36" rx="6" class="gha-part" />
+  <text x="480" y="30" class="gha-part-lbl">GitHub</text>
+
+  {/* Lifelines */}
+  <line x1="80" y1="48" x2="80" y2="308" class="gha-lifeline" />
+  <line x1="280" y1="48" x2="280" y2="308" class="gha-lifeline" />
+  <line x1="480" y1="48" x2="480" y2="308" class="gha-lifeline" />
+
+  {/* 1. App → Browser: redirect */}
+  <line x1="80" y1="88" x2="278" y2="88" class="gha-seq-line" marker-end="url(#gha-waf-a)" />
+  <text x="180" y="78" class="gha-seq-lbl">1. redirect with client_id</text>
+
+  {/* 2. Browser → GitHub */}
+  <line x1="280" y1="128" x2="478" y2="128" class="gha-seq-line" marker-end="url(#gha-waf-a)" />
+  <text x="380" y="118" class="gha-seq-lbl">GET /login/oauth/authorize</text>
+
+  {/* 3. GitHub → Browser: authorization page */}
+  <line x1="480" y1="168" x2="282" y2="168" class="gha-seq-line" marker-end="url(#gha-waf-a)" />
+  <text x="380" y="158" class="gha-seq-lbl">authorization page</text>
+
+  {/* 4. Browser → App: callback with code */}
+  <line x1="280" y1="208" x2="82" y2="208" class="gha-seq-line gha-seq-line--g" marker-end="url(#gha-waf-ag)" />
+  <text x="180" y="198" class="gha-seq-lbl">2. GET /callback?code=…</text>
+
+  {/* 5. App → GitHub: exchange code */}
+  <line x1="80" y1="248" x2="478" y2="248" class="gha-seq-line" marker-end="url(#gha-waf-a)" />
+  <text x="280" y="238" class="gha-seq-lbl">3. POST /access_token + secret</text>
+
+  {/* 6. GitHub → App: ghu_ token */}
+  <line x1="480" y1="288" x2="82" y2="288" class="gha-seq-line gha-seq-line--g" marker-end="url(#gha-waf-ag)" />
+  <text x="280" y="278" class="gha-seq-lbl gha-seq-lbl--g">ghu_… token</text>
+</svg>
+</FlowDiagram>
+
+### Device flow
+
+For CLIs and tools that can't open a browser or receive a redirect.
+
+1. **Request a device code.** POST to `https://github.com/login/device/code` with your Client ID. GitHub returns a short `user_code` and a verification URL.
+2. **Display the code.** Print the URL and `user_code`. The user visits that URL on any device and enters the code.
+3. **Poll until authorized.** Repeatedly POST to `https://github.com/login/oauth/access_token` with your `client_id`, the `device_code` (not the `user_code`), and `grant_type=urn:ietf:params:oauth:grant-type:device_code`. GitHub returns `authorization_pending` until the user authorizes, then returns the `ghu_…` token.
+
+<FlowDiagram label="Device flow sequence diagram" caption="The user code travels out of band. Your CLI never opens a browser or handles a redirect.">
+<svg viewBox="0 0 500 295" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="gha-df-a" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <path d="M0 0 L8 3 L0 6 Z" fill="#968F7E" />
+    </marker>
+    <marker id="gha-df-ag" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <path d="M0 0 L8 3 L0 6 Z" fill="#54A06F" />
+    </marker>
+  </defs>
+
+  {/* Participants */}
+  <rect x="10" y="12" width="150" height="36" rx="6" class="gha-part" />
+  <text x="85" y="30" class="gha-part-lbl">Your CLI</text>
+  <rect x="340" y="12" width="150" height="36" rx="6" class="gha-part" />
+  <text x="415" y="30" class="gha-part-lbl">GitHub</text>
+
+  {/* Lifelines */}
+  <line x1="85" y1="48" x2="85" y2="283" class="gha-lifeline" />
+  <line x1="415" y1="48" x2="415" y2="283" class="gha-lifeline" />
+
+  {/* 1. CLI → GitHub: request device code */}
+  <line x1="85" y1="88" x2="413" y2="88" class="gha-seq-line" marker-end="url(#gha-df-a)" />
+  <text x="250" y="78" class="gha-seq-lbl">1. POST /login/device/code</text>
+
+  {/* 2. GitHub → CLI: user_code + verification_url */}
+  <line x1="415" y1="128" x2="87" y2="128" class="gha-seq-line" marker-end="url(#gha-df-a)" />
+  <text x="250" y="118" class="gha-seq-lbl">{"{ user_code, verification_url }"}</text>
+
+  {/* User action callout */}
+  <rect x="90" y="148" width="320" height="46" rx="6" class="gha-action-box" />
+  <text x="250" y="167" class="gha-action-lbl">2. user visits verification_url on any device</text>
+  <text x="250" y="183" class="gha-action-lbl">enters user_code to authorize</text>
+
+  {/* 3. CLI polls */}
+  <line x1="85" y1="218" x2="413" y2="218" class="gha-seq-line" marker-end="url(#gha-df-a)" />
+  <text x="250" y="208" class="gha-seq-lbl">3. POST /access_token · polls until authorized</text>
+
+  {/* 4. GitHub → CLI: token */}
+  <line x1="415" y1="258" x2="87" y2="258" class="gha-seq-line gha-seq-line--g" marker-end="url(#gha-df-ag)" />
+  <text x="250" y="248" class="gha-seq-lbl gha-seq-lbl--g">ghu_… token</text>
+</svg>
+</FlowDiagram>
+
+## OAuth Apps, for contrast
+
+OAuth Apps are an older, separate integration type. They're worth understanding because you'll run into them in the wild, and they look a lot like GitHub Apps from the outside. The GitHub CLI (`gh`) authenticates via an OAuth App, which is why `gh auth token` returns `gho_…` and `gh auth login --scopes` takes classic OAuth scopes. The differences in the table below are what matter.
+
+| | GitHub App | OAuth App |
+|:--|:--|:--|
+| Identity | Own actor, appears as `app[bot]` in audit logs | Acts as the authorizing user |
+| Access model | Fine-grained permissions per resource type | Classic OAuth scopes (`repo`, `read:org`, etc.) |
+| Can act without a user | Yes, via Flow 1 (installation token) | No, always tied to a user |
+| Token types | `ghs_…` or `ghu_…` | `gho_…` |
+| Token lifespan | 1 hour (installation), configurable (user) | No expiry by default |
+| Repo access control | Per-installation, repo-specific | All repos the user can access |
+| Enterprise billing APIs | Supported (some gaps, improving) | Not supported |
+| EMU support | Yes, enterprise apps fully supported | Restricted, must be enterprise-approved |
+
+<Callout tone="warning">
+  OAuth Apps are not a migration path from classic PATs. They carry many of the same limitations: user-tied, broad scopes, no expiry by default. GitHub Apps are the right destination.
+</Callout>
+
+## Client libraries
+
+Those three steps in Flow 1 (generate a JWT, exchange it for an installation token, use the token) are what every major client library automates. You provide App ID, private key, and Installation ID; you get back an authenticated client that manages token refresh internally. You won't write that JWT code by hand in production.
+
+**JavaScript / TypeScript:** [`@octokit/auth-app`](https://github.com/octokit/auth-app.js), [`@octokit/rest`](https://github.com/octokit/rest.js), [`octokit`](https://github.com/octokit/octokit.js)
+
+The official GitHub client family. `@octokit/auth-app` handles the JWT exchange. Pass `appId`, `privateKey`, and `installationId`; installation tokens are minted and refreshed for you.
+
+**Python:** [`PyGithub`](https://github.com/PyGithub/PyGithub), [`githubkit`](https://github.com/yanyongyu/githubkit)
+
+`PyGithub` is the established library. `githubkit` is a newer alternative with better async support and full type annotations. Both accept the same three inputs for GitHub App auth.
+
+**Go:** [`google/go-github`](https://github.com/google/go-github), [`palantir/go-githubapp`](https://github.com/palantir/go-githubapp)
+
+`go-github` is the standard low-level REST client. `palantir/go-githubapp` builds on top for GitHub App-first use: webhook routing, installation client management, and token caching. It exposes three client types: app client (app metadata only), installation client (full API within granted permissions), and token client (static OAuth token).
+
+**Ruby:** [`octokit.rb`](https://github.com/octokit/octokit.rb)
+
+The official Ruby client. Supports GitHub App authentication the same way as the JS family.
+
+## Token reference
+
+<TokenTable />
+
+<style>{`
+  .overview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 10px;
+    margin: 1.5rem 0 2rem;
+  }
+
+  .overview-card {
+    border-radius: var(--radius-md);
+    padding: 14px 16px;
+    border: 1px solid transparent;
+  }
+
+  .overview-card__label {
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    margin-bottom: 10px;
+  }
+
+  .overview-card ul {
+    margin: 0;
+    padding-left: 1rem;
+  }
+
+  .overview-card li {
+    font-size: 13px;
+    line-height: 1.55;
+    margin-bottom: 4px;
+    color: var(--text-body);
+  }
+
+  .overview-card li::marker { color: inherit; }
+
+  .overview-card code {
+    font-size: 0.85em;
+    padding: 0.05em 0.3em;
+  }
+
+  .overview-card--bad {
+    background: var(--color-clay-100);
+    border-color: rgba(198, 85, 60, 0.2);
+  }
+  .overview-card--bad .overview-card__label { color: var(--color-clay-700); }
+
+  .overview-card--good {
+    background: var(--color-green-50);
+    border-color: var(--color-green-200);
+  }
+  .overview-card--good .overview-card__label { color: var(--color-green-700); }
+
+  .overview-card--neutral {
+    background: var(--color-amber-100);
+    border-color: rgba(217, 148, 43, 0.25);
+  }
+  .overview-card--neutral .overview-card__label { color: var(--color-amber-700); }
+`}</style>
+
+<style>{`
+  /* ---- Chain diagram (Flow 1) ---- */
+  .gha-box { stroke-width: 1.5; }
+  .gha-box--neutral { fill: var(--color-paper-50); stroke: var(--color-paper-400); }
+  .gha-box--amber   { fill: var(--color-amber-100); stroke: rgba(217,148,43,0.4); }
+  .gha-box--green   { fill: var(--color-green-50); stroke: var(--color-green-200); }
+
+  .gha-lbl {
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 10.5px;
+    text-anchor: middle;
+    dominant-baseline: middle;
+    fill: var(--color-ink-700);
+  }
+  .gha-lbl--amber { fill: var(--color-amber-700); }
+  .gha-lbl--green { fill: var(--color-green-700); }
+
+  .gha-sub {
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 9px;
+    text-anchor: middle;
+    dominant-baseline: middle;
+    fill: var(--color-ink-400);
+  }
+  .gha-sub--green { fill: var(--color-green-600); }
+
+  .gha-step {
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 8.5px;
+    text-anchor: middle;
+    dominant-baseline: middle;
+    fill: var(--color-ink-500);
+  }
+
+  .gha-line { fill: none; stroke: var(--color-ink-400); stroke-width: 1.5; }
+  .gha-line--g { stroke: var(--color-green-400); }
+
+  /* ---- Sequence diagrams (Flow 2 sub-flows) ---- */
+  .gha-part { fill: var(--color-paper-50); stroke: var(--color-paper-400); stroke-width: 1.5; }
+
+  .gha-part-lbl {
+    font-family: "Hanken Grotesk", -apple-system, sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    text-anchor: middle;
+    dominant-baseline: middle;
+    fill: var(--color-ink-700);
+  }
+
+  .gha-lifeline { stroke: var(--color-paper-400); stroke-width: 1; stroke-dasharray: 4 3; }
+
+  .gha-seq-line { fill: none; stroke: var(--color-ink-400); stroke-width: 1.5; }
+  .gha-seq-line--g { stroke: var(--color-green-400); }
+
+  .gha-seq-lbl {
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 8.5px;
+    text-anchor: middle;
+    dominant-baseline: middle;
+    fill: var(--color-ink-600);
+  }
+  .gha-seq-lbl--g { fill: var(--color-green-700); }
+
+  .gha-action-box {
+    fill: var(--color-paper-50);
+    stroke: var(--color-paper-400);
+    stroke-width: 1;
+    stroke-dasharray: 4 3;
+  }
+
+  .gha-action-lbl {
+    font-family: "Hanken Grotesk", -apple-system, sans-serif;
+    font-size: 8.5px;
+    font-style: italic;
+    text-anchor: middle;
+    dominant-baseline: middle;
+    fill: var(--color-ink-500);
+  }
+`}</style>

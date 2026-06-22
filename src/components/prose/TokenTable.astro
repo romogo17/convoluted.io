@@ -1,0 +1,280 @@
+---
+const tokens = [
+  {
+    prefix: 'ghp_',
+    name: 'Classic PAT',
+    lifespan: 'User-set expiry',
+    purpose: 'Legacy credential tied to a human (or service) user. What you\'re replacing.',
+    flow: 'legacy',
+  },
+  {
+    prefix: 'github_pat_…',
+    name: 'Fine-grained PAT',
+    lifespan: 'User-set expiry',
+    purpose: 'Scoped PAT, still user-tied. Better than classic, but unsupported on many enterprise billing APIs.',
+    flow: 'legacy',
+  },
+  {
+    prefix: 'eyJ…',
+    name: 'JWT',
+    lifespan: 'Max 10 min',
+    purpose: 'Signed with the app\'s private key (RS256). Used only to call the Apps API to get an installation token. Never used for resource API calls.',
+    flow: 'app-f1',
+  },
+  {
+    prefix: 'ghs_…',
+    name: 'Installation Access Token',
+    lifespan: '1 hour',
+    purpose: 'What your automation actually uses. Scoped to one installation, one set of permissions.',
+    flow: 'app-f1',
+  },
+  {
+    prefix: 'ghu_…',
+    name: 'User Access Token',
+    lifespan: '8h (expiry enabled) / no expiry (expiry disabled)',
+    purpose: 'GitHub App acting on behalf of a user. Doubly constrained by the app\'s installed permissions AND the user\'s own access.',
+    flow: 'app-f2',
+  },
+  {
+    prefix: 'ghr_…',
+    name: 'Refresh Token',
+    lifespan: '6 months',
+    purpose: 'Renews an expired user access token without re-authorization. Only issued when token expiry is enabled on the app.',
+    flow: 'app-f2',
+  },
+  {
+    prefix: 'gho_…',
+    name: 'OAuth App Token',
+    lifespan: 'No expiry by default',
+    purpose: 'Classic OAuth App token. Scoped by OAuth scopes, not fine-grained permissions. What gh CLI issues.',
+    flow: 'oauth',
+  },
+];
+
+const flowLabels: Record<string, string> = {
+  legacy: 'Legacy',
+  'app-f1': 'App — Flow 1',
+  'app-f2': 'App — Flow 2',
+  oauth: 'OAuth App',
+};
+
+const filters = [
+  { key: 'all', label: 'All' },
+  { key: 'app-f1', label: 'App — Flow 1' },
+  { key: 'app-f2', label: 'App — Flow 2' },
+  { key: 'oauth', label: 'OAuth App' },
+  { key: 'legacy', label: 'Legacy' },
+];
+---
+
+<div class="token-table">
+  <div class="token-table__filters" role="group" aria-label="Filter by token flow">
+    {filters.map(f => (
+      <button
+        class:list={['token-table__filter', { 'token-table__filter--active': f.key === 'all' }]}
+        data-filter={f.key}
+        type="button"
+      >
+        {f.label}
+      </button>
+    ))}
+  </div>
+
+  <div class="token-table__rows">
+    {tokens.map(t => (
+      <div class:list={['token-table__row', `token-table__row--${t.flow}`]} data-flow={t.flow}>
+        <div class="token-table__prefix">
+          <code>{t.prefix}</code>
+        </div>
+        <div class="token-table__info">
+          <div class="token-table__name-row">
+            <span class="token-table__name">{t.name}</span>
+            <span class:list={['token-table__badge', `token-table__badge--${t.flow}`]}>
+              {flowLabels[t.flow]}
+            </span>
+          </div>
+          <div class="token-table__lifespan">Lifespan: {t.lifespan}</div>
+          <div class="token-table__purpose">{t.purpose}</div>
+        </div>
+      </div>
+    ))}
+  </div>
+</div>
+
+<style>
+  .token-table {
+    margin: 1.75rem 0;
+  }
+
+  .token-table__filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 14px;
+  }
+
+  .token-table__filter {
+    display: inline-flex;
+    align-items: center;
+    height: 28px;
+    padding: 0 12px;
+    font-family: var(--font-ui);
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--text-muted);
+    background: var(--surface-raised);
+    border: 1.5px solid var(--border-default);
+    border-radius: var(--radius-pill);
+    cursor: pointer;
+    transition: background var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out);
+  }
+
+  .token-table__filter:hover {
+    color: var(--text-strong);
+    border-color: var(--color-green-300);
+  }
+
+  .token-table__filter--active {
+    background: var(--color-green-800);
+    color: var(--color-paper-50);
+    border-color: var(--color-green-800);
+  }
+
+  .token-table__filter--active:hover {
+    color: var(--color-paper-50);
+    border-color: var(--color-green-800);
+  }
+
+  .token-table__rows {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .token-table__row {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    padding: 12px 14px;
+    border-radius: var(--radius-md);
+  }
+
+  .token-table__row[hidden] {
+    display: none;
+  }
+
+  .token-table__row--legacy  { background: var(--color-slate-100); }
+  .token-table__row--app-f1  { background: var(--color-green-50); }
+  .token-table__row--app-f2  { background: var(--color-amber-100); }
+  .token-table__row--oauth   { background: var(--color-clay-100); }
+
+  .token-table__prefix {
+    flex-shrink: 0;
+    width: 124px;
+    padding-top: 2px;
+  }
+
+  .token-table__prefix code {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 600;
+    background: none !important;
+    border: none !important;
+    padding: 0 !important;
+  }
+
+  .token-table__row--legacy .token-table__prefix code  { color: var(--color-slate-700); }
+  .token-table__row--app-f1 .token-table__prefix code  { color: var(--color-green-700); }
+  .token-table__row--app-f2 .token-table__prefix code  { color: var(--color-amber-700); }
+  .token-table__row--oauth  .token-table__prefix code  { color: var(--color-clay-700); }
+
+  .token-table__info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .token-table__name-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 3px;
+  }
+
+  .token-table__name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-strong);
+  }
+
+  .token-table__badge {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    padding: 2px 8px;
+    border-radius: var(--radius-pill);
+    border: 1px solid transparent;
+  }
+
+  .token-table__badge--legacy {
+    background: rgba(63, 106, 208, 0.1);
+    color: var(--color-slate-700);
+    border-color: rgba(63, 106, 208, 0.2);
+  }
+  .token-table__badge--app-f1 {
+    background: var(--color-green-100);
+    color: var(--color-green-700);
+    border-color: var(--color-green-200);
+  }
+  .token-table__badge--app-f2 {
+    background: rgba(217, 148, 43, 0.15);
+    color: var(--color-amber-700);
+    border-color: rgba(217, 148, 43, 0.25);
+  }
+  .token-table__badge--oauth {
+    background: rgba(198, 85, 60, 0.1);
+    color: var(--color-clay-700);
+    border-color: rgba(198, 85, 60, 0.2);
+  }
+
+  .token-table__lifespan {
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    color: var(--text-faint);
+    margin-bottom: 4px;
+  }
+
+  .token-table__purpose {
+    font-size: 13.5px;
+    line-height: 1.55;
+    color: var(--text-body);
+  }
+
+  @media (max-width: 480px) {
+    .token-table__row { flex-direction: column; gap: 6px; }
+    .token-table__prefix { width: auto; }
+  }
+</style>
+
+<script>
+  const filters = document.querySelectorAll<HTMLButtonElement>('.token-table__filter');
+  const rows = document.querySelectorAll<HTMLElement>('.token-table__row');
+
+  filters.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const key = btn.dataset.filter ?? 'all';
+
+      filters.forEach(b => b.classList.toggle('token-table__filter--active', b === btn));
+
+      rows.forEach(row => {
+        const visible = key === 'all' || row.dataset.flow === key;
+        if (visible) {
+          row.removeAttribute('hidden');
+        } else {
+          row.setAttribute('hidden', '');
+        }
+      });
+    });
+  });
+</script>
