@@ -1,6 +1,6 @@
 ---
 title: 'GitHub Apps, untangled'
-description: "A PAT is a person's password by another name. GitHub Apps are the alternative built for machines: their own identity, fine-grained permissions, short-lived tokens. What a GitHub App actually is, how its two auth flows work, and which token each one mints."
+description: "A personal access token is only ever as stable as the person it belongs to, which is to say not very. GitHub Apps are the alternative built for machines: their own identity, fine-grained permissions, tokens that expire in an hour. This guide walks through what an App really is, how its two auth flows work, and which token each one mints."
 pubDate: 2026-06-21
 tags: ['github', 'platform', 'devops']
 featured: true
@@ -11,17 +11,17 @@ import Expand from '../../components/prose/Expand.astro';
 import TokenTable from '../../components/prose/TokenTable.astro';
 import FlowDiagram from '../../components/prose/FlowDiagram.astro';
 
-PATs are the obvious starting point. GitHub surfaces them first, every CI system knows how to use them, and they work well, right up until they don't. The fragility is structural: a PAT is always tied to a person, which means you're one password reset, one 2FA policy rollout, or one offboarding away from a 2am incident where nobody remembers which account the token belongs to.
+You've done this a hundred times. Spin up some automation, generate a personal access token, paste it into a secret, and move on. It works, too. GitHub offers you a PAT before you've even asked, and every CI system already knows what to do with one. Then one morning a job fails at 2am, and it takes twenty minutes to work out that the token belonged to someone who left in March. That's the trouble with a PAT. It's tied to a person, so you're always one password reset, one 2FA rollout, or one offboarding away from an incident nobody can trace back.
 
 So what's the alternative? A GitHub App is a different kind of account. You register it once and GitHub treats it as its own actor. Not a human, not a service user wearing a human's face. It has a name, a private key it signs with, a set of permissions you declare up front, and its own line in the audit log as `your-app[bot]`. You install it onto the orgs or repositories that need it, and from then on it authenticates as itself.
 
-The payoff is that everything it hands out is short-lived and scoped to a single installation. No shared password to rotate, nobody to offboard, no 2am guessing game about whose account a token belongs to. The mental-model shift from a PAT is small. The operational improvement is not.
+The payoff is that everything it hands out is short-lived and scoped to a single installation. No shared password to rotate, nobody to offboard, no guessing game about whose account a token belongs to. You barely change how you think about auth, but you retire the shared long-lived credential, and with it the incident it eventually causes.
 
-This guide builds that model piece by piece: what an app is made of, the two ways it can authenticate, and the tokens each flow produces. Read it start to finish to understand the system, then keep it around as the reference you come back to.
+This guide builds the model piece by piece: what an app is made of, the two ways it authenticates, and the token each flow produces. Read it start to finish once, then keep it around as a reference.
 
 ## Overview
 
-Three ways to authenticate automation against GitHub, side by side. This is the map for everything that follows. GitHub Apps are the destination; the other two are where you're probably coming from.
+Before any of the mechanics, it helps to see the whole field at once. There are three ways to authenticate automation against GitHub, and here they are side by side. GitHub Apps are where you want to end up; the other two are where you're probably coming from.
 
 <div class="overview-grid">
   <div class="overview-card overview-card--bad">
@@ -94,6 +94,54 @@ That splits cleanly into two flows, and which one you use decides which token yo
 
 - **Flow 1 (installation token).** The app authenticates as itself with its private key. This is the common case: CI pipelines, scheduled jobs, batch automation with no human present. Produces a `ghs_…` token.
 - **Flow 2 (user access token).** The app authenticates on behalf of a specific person, with its client secret. Reach for this when a human starts the action: dashboards, CLI tools, bots that post as the user. Produces a `ghu_…` token.
+
+<FlowDiagram label="Which flow, which token decision tree" caption="One question decides everything downstream: is a human in the loop when the token is minted?">
+<svg viewBox="0 0 640 246" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="gha-dt-a" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <path d="M0 0 L8 3 L0 6 Z" fill="#968F7E" />
+    </marker>
+    <marker id="gha-dt-g" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <path d="M0 0 L8 3 L0 6 Z" fill="#54A06F" />
+    </marker>
+  </defs>
+
+  {/* Decision node */}
+  <rect x="230" y="14" width="180" height="46" rx="7" class="gha-box gha-box--neutral" />
+  <text x="320" y="34" class="gha-lbl">Human in the loop?</text>
+  <text x="320" y="50" class="gha-sub">decides which flow</text>
+
+  {/* Branch: no -> Flow 1 (green, common path) */}
+  <line x1="320" y1="60" x2="162" y2="92" class="gha-line gha-line--g" marker-end="url(#gha-dt-g)" />
+  <text x="236" y="70" class="gha-step">no</text>
+
+  {/* Branch: yes -> Flow 2 */}
+  <line x1="320" y1="60" x2="478" y2="92" class="gha-line" marker-end="url(#gha-dt-a)" />
+  <text x="404" y="70" class="gha-step">yes</text>
+
+  {/* Flow 1 leaf */}
+  <rect x="55" y="94" width="190" height="56" rx="7" class="gha-box gha-box--green" />
+  <text x="150" y="116" class="gha-lbl gha-lbl--green">Flow 1 · ghs_</text>
+  <text x="150" y="133" class="gha-sub gha-sub--green">app acts as itself</text>
+
+  {/* Flow 2 node */}
+  <rect x="400" y="94" width="180" height="48" rx="7" class="gha-box gha-box--amber" />
+  <text x="490" y="113" class="gha-lbl gha-lbl--amber">Flow 2 · ghu_</text>
+  <text x="490" y="129" class="gha-sub">acts on behalf of a user</text>
+
+  {/* Flow 2 splits into two sub-flows */}
+  <line x1="490" y1="142" x2="450" y2="184" class="gha-line" marker-end="url(#gha-dt-a)" />
+  <line x1="490" y1="142" x2="566" y2="184" class="gha-line" marker-end="url(#gha-dt-a)" />
+
+  <rect x="385" y="186" width="120" height="44" rx="7" class="gha-box gha-box--neutral" />
+  <text x="445" y="205" class="gha-lbl">Web app flow</text>
+  <text x="445" y="220" class="gha-sub">browser redirect</text>
+
+  <rect x="510" y="186" width="118" height="44" rx="7" class="gha-box gha-box--neutral" />
+  <text x="569" y="205" class="gha-lbl">Device flow</text>
+  <text x="569" y="220" class="gha-sub">no browser</text>
+</svg>
+</FlowDiagram>
 
 The two sections below walk through each in turn.
 
@@ -201,7 +249,7 @@ Client libraries handle steps 1 and 2 automatically. You provide App ID, private
 
 ## Flow 2: App acting on behalf of a user (user access token)
 
-For situations where a human is interacting with your app and it needs to act as them: dashboards, CLI tools, bots that post on a user's behalf. This flow uses the **Client ID and Client Secret**, not the private key. The private key is never involved.
+Sometimes there's a person at the other end, and the app needs to act as them rather than as itself. Think dashboards, CLI tools, or a bot that posts on someone's behalf. This is the flow for that, and it leans on the Client ID and Client Secret instead of the private key. The private key never comes into it.
 
 <Callout tone="warning">
   The resulting <code>ghu_…</code> token is doubly constrained: by the app's installed permissions AND by what that specific user can access. It can never exceed either boundary, even if the user normally has broader access elsewhere.
@@ -209,7 +257,7 @@ For situations where a human is interacting with your app and it needs to act as
 
 ### Web application flow
 
-The standard browser-based path, for apps that can receive a redirect. The user bounces out to GitHub's authorization page and back to your callback, and you exchange the result for a token. Three steps:
+This is the standard browser-based path, for any app that can receive a redirect. The user bounces out to GitHub's authorization page and back to your callback, and you trade the result for a token. Three steps:
 
 1. **Redirect the user** to `https://github.com/login/oauth/authorize` with your Client ID. GitHub shows an authorization prompt.
 2. **GitHub redirects back** to your callback URL with a short-lived `?code=` parameter.
@@ -275,7 +323,7 @@ GitHub supports PKCE for this flow. Add `code_challenge` (base64url-encoded SHA-
 
 ### Device flow
 
-For CLIs and tools that can't open a browser or receive a redirect.
+Some clients can't open a browser or catch a redirect at all: a CLI on a headless server, a tool running over SSH. The device flow is built for exactly that case.
 
 1. **Request a device code.** POST to `https://github.com/login/device/code` with your Client ID. GitHub returns a short `user_code` and a verification URL.
 2. **Display the code.** Print the URL and `user_code`. The user visits that URL on any device and enters the code.
