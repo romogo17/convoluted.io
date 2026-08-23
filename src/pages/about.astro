@@ -46,7 +46,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <img src="/knot-motif.svg" class="subscribe-block__motif" width="280" height="56" alt="" aria-hidden="true" />
       <h2 class="subscribe-block__title">Stay in the loop</h2>
       <p class="subscribe-block__subhead">~2 posts a month · no spam · unsubscribe anytime</p>
-      <form class="subscribe-block__form" action="#" method="post">
+      <form
+        class="subscribe-block__form"
+        action="https://buttondown.com/api/emails/embed-subscribe/convoluted.io"
+        method="post"
+        data-newsletter
+      >
         <div class="subscribe-block__input-wrap">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="subscribe-block__icon" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
           <input
@@ -60,6 +65,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         </div>
         <button type="submit" class="subscribe-block__btn">Subscribe</button>
       </form>
+      <p class="subscribe-block__status" data-newsletter-status role="status" aria-live="polite"></p>
     </section>
   </div>
 </BaseLayout>
@@ -257,9 +263,23 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   .subscribe-block__btn:hover { background: var(--color-lime-500); }
   .subscribe-block__btn:active { transform: translateY(1px); }
 
+  .subscribe-block__status {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    margin: 14px 0 0;
+    min-height: 1.2em;
+    color: rgba(251, 249, 243, 0.55);
+  }
+  .subscribe-block__status[data-state="success"] { color: var(--color-lime-400, #b6f14a); }
+  .subscribe-block__status[data-state="error"] { color: #ff9b8a; }
+
   @media (max-width: 520px) {
     .about-hero { flex-direction: column-reverse; }
     .subscribe-block__form { flex-direction: column; }
     .subscribe-block__btn { width: 100%; }
   }
 </style>
+
+<script>
+  import "../scripts/newsletter";
+</script>

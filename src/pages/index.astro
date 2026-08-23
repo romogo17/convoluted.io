@@ -33,7 +33,12 @@ function postHref(post: typeof posts[0]) {
         at night — pulled apart one thread at a time.
       </p>
 
-      <form class="hero__form" action="/about#subscribe" method="get">
+      <form
+        class="hero__form"
+        action="https://buttondown.com/api/emails/embed-subscribe/convoluted.io"
+        method="post"
+        data-newsletter
+      >
         <div class="hero__input-wrap">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="hero__input-icon" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
           <input
@@ -42,10 +47,12 @@ function postHref(post: typeof posts[0]) {
             placeholder="you@domain.dev"
             aria-label="Email address"
             class="hero__input"
+            required
           />
         </div>
         <button type="submit" class="hero__btn">Subscribe</button>
       </form>
+      <p class="hero__status" data-newsletter-status role="status" aria-live="polite"></p>
       <p class="hero__nudge">~2 posts a month · no spam · unsubscribe anytime</p>
     </div>
   </section>
@@ -223,6 +230,17 @@ function postHref(post: typeof posts[0]) {
     margin-bottom: 0;
   }
 
+  .hero__status {
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    color: var(--text-faint);
+    margin: 11px 0 0;
+    min-height: 1.2em;
+  }
+  .hero__status:empty { display: none; }
+  .hero__status[data-state="success"] { color: var(--color-lime-600, var(--text)); }
+  .hero__status[data-state="error"] { color: #c0392b; }
+
   /* ——— Page content ——— */
   .page-content {
     max-width: var(--container-page);
@@ -398,3 +416,7 @@ function postHref(post: typeof posts[0]) {
     .hero__btn { width: 100%; }
   }
 </style>
+
+<script>
+  import "../scripts/newsletter";
+</script>
