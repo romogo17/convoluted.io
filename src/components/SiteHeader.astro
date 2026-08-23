@@ -3,7 +3,6 @@ import { Rss, Mail } from '@lucide/astro';
 
 const pathname = Astro.url.pathname;
 const isWriting = pathname === '/' || pathname.startsWith('/writing');
-const isProjects = pathname.startsWith('/projects');
 const isAbout = pathname.startsWith('/about');
 
 const newsletterEnabled = import.meta.env.PUBLIC_NEWSLETTER_ENABLED === 'true';
@@ -18,7 +17,6 @@ const newsletterEnabled = import.meta.env.PUBLIC_NEWSLETTER_ENABLED === 'true';
 
     <nav class="site-nav" aria-label="Primary">
       <a href="/" class="nav-link" aria-current={isWriting ? 'page' : undefined}>Writing</a>
-      <a href="/projects" class="nav-link" aria-current={isProjects ? 'page' : undefined}>Projects</a>
       <a href="/about" class="nav-link" aria-current={isAbout ? 'page' : undefined}>About</a>
     </nav>
 
