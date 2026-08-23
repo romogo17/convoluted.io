@@ -5,6 +5,8 @@ const pathname = Astro.url.pathname;
 const isWriting = pathname === '/' || pathname.startsWith('/writing');
 const isProjects = pathname.startsWith('/projects');
 const isAbout = pathname.startsWith('/about');
+
+const newsletterEnabled = import.meta.env.PUBLIC_NEWSLETTER_ENABLED === 'true';
 ---
 
 <header class="site-header">
@@ -24,10 +26,12 @@ const isAbout = pathname.startsWith('/about');
       <a href="/rss.xml" class="icon-btn" aria-label="RSS feed">
         <Rss size={18} />
       </a>
-      <a href="/about#subscribe" class="btn-subscribe">
-        <Mail size={15} />
-        <span class="btn-subscribe__label">Subscribe</span>
-      </a>
+      {newsletterEnabled && (
+        <a href="/about#subscribe" class="btn-subscribe">
+          <Mail size={15} />
+          <span class="btn-subscribe__label">Subscribe</span>
+        </a>
+      )}
     </div>
   </div>
 </header>

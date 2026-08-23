@@ -12,6 +12,8 @@ const gridPosts = posts.filter(p => p.id !== featuredPost?.id);
 function postHref(post: typeof posts[0]) {
   return `/writing/${post.id.replace(/\.(md|mdx)$/, '')}`;
 }
+
+const newsletterEnabled = import.meta.env.PUBLIC_NEWSLETTER_ENABLED === 'true';
 ---
 
 <BaseLayout title="convoluted.io">
@@ -30,30 +32,34 @@ function postHref(post: typeof posts[0]) {
 
       <p class="hero__subhead">
         Field notes on platform engineering, distributed systems, and the deploys that keep you up
-        at night — pulled apart one thread at a time.
+        at night, pulled apart one thread at a time.
       </p>
 
-      <form
-        class="hero__form"
-        action="https://buttondown.com/api/emails/embed-subscribe/convoluted.io"
-        method="post"
-        data-newsletter
-      >
-        <div class="hero__input-wrap">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="hero__input-icon" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-          <input
-            type="email"
-            name="email"
-            placeholder="you@domain.dev"
-            aria-label="Email address"
-            class="hero__input"
-            required
-          />
-        </div>
-        <button type="submit" class="hero__btn">Subscribe</button>
-      </form>
-      <p class="hero__status" data-newsletter-status role="status" aria-live="polite"></p>
-      <p class="hero__nudge">~2 posts a month · no spam · unsubscribe anytime</p>
+      {newsletterEnabled && (
+        <>
+          <form
+            class="hero__form"
+            action="https://buttondown.com/api/emails/embed-subscribe/convoluted.io"
+            method="post"
+            data-newsletter
+          >
+            <div class="hero__input-wrap">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="hero__input-icon" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+              <input
+                type="email"
+                name="email"
+                placeholder="you@domain.dev"
+                aria-label="Email address"
+                class="hero__input"
+                required
+              />
+            </div>
+            <button type="submit" class="hero__btn">Subscribe</button>
+          </form>
+          <p class="hero__status" data-newsletter-status role="status" aria-live="polite"></p>
+          <p class="hero__nudge">~2 posts a month · no spam · unsubscribe anytime</p>
+        </>
+      )}
     </div>
   </section>
 
@@ -108,8 +114,8 @@ function postHref(post: typeof posts[0]) {
 
     {posts.length === 0 && (
       <div class="empty-state">
-        <p>No posts yet — the first one is almost ready.</p>
-        <p class="empty-state__hint">It's simpler than it looks — promise.</p>
+        <p>No posts yet. The first one is almost ready.</p>
+        <p class="empty-state__hint">It's simpler than it looks, promise.</p>
       </div>
     )}
   </div>

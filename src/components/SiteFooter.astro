@@ -1,5 +1,5 @@
 ---
-
+const newsletterEnabled = import.meta.env.PUBLIC_NEWSLETTER_ENABLED === 'true';
 ---
 
 <footer class="site-footer">
@@ -13,9 +13,9 @@
           >
         </a>
         <p class="site-footer__tagline">
-          An engineering blog about the messy middle of systems — platform
+          An engineering blog about the messy middle of systems: platform
           engineering, distributed systems, and the deploys that keep you up at
-          night. We untangle it so the next person doesn't have to.
+          night. I untangle it so the next person doesn't have to.
         </p>
       </div>
 
@@ -34,7 +34,7 @@
             target="_blank">GitHub</a
           >
           <a href="/rss.xml">RSS</a>
-          <a href="/about#subscribe">Email</a>
+          {newsletterEnabled && <a href="/about#subscribe">Email</a>}
         </div>
       </div>
     </div>
