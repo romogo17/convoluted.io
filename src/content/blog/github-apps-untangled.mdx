@@ -112,25 +112,25 @@ This is the flow you'll use most: an app running with no human attached. It prov
     </marker>
   </defs>
 
-  {/* Box 1 — private key (permanent, neutral) */}
+  {/* Box 1 - private key (permanent, neutral) */}
   <rect x="10" y="30" width="120" height="58" rx="7" class="gha-box gha-box--neutral" />
   <text x="70" y="55" class="gha-lbl">private-key.pem</text>
   <text x="70" y="73" class="gha-sub">permanent · PEM</text>
 
-  {/* Arrow 1 — sign RS256 */}
+  {/* Arrow 1 - sign RS256 */}
   <line x1="130" y1="59" x2="192" y2="59" class="gha-line" marker-end="url(#gha-f1-a)" />
   <text x="161" y="18" class="gha-step">sign RS256</text>
 
-  {/* Box 2 — JWT (short-lived, amber) */}
+  {/* Box 2 - JWT (short-lived, amber) */}
   <rect x="194" y="30" width="90" height="58" rx="7" class="gha-box gha-box--amber" />
   <text x="239" y="55" class="gha-lbl gha-lbl--amber">JWT (eyJ…)</text>
   <text x="239" y="73" class="gha-sub">≤ 10 min</text>
 
-  {/* Arrow 2 — exchange for installation token */}
+  {/* Arrow 2 - exchange for installation token */}
   <line x1="284" y1="59" x2="365" y2="59" class="gha-line gha-line--g" marker-end="url(#gha-f1-ag)" />
   <text x="324" y="18" class="gha-step">/access_tokens</text>
 
-  {/* Box 3 — installation token (goal, green) */}
+  {/* Box 3 - installation token (goal, green) */}
   <rect x="367" y="30" width="223" height="58" rx="7" class="gha-box gha-box--green" />
   <text x="478" y="55" class="gha-lbl gha-lbl--green">ghs_… token</text>
   <text x="478" y="73" class="gha-sub gha-sub--green">1 hr · resource APIs</text>

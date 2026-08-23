@@ -11,7 +11,7 @@
 // its status — so we treat a completed request as success and only surface an
 // error if the network request itself throws.
 
-const CONFIRM_MESSAGE = "Almost there — check your inbox to confirm.";
+const CONFIRM_MESSAGE = "Almost there. Check your inbox to confirm.";
 const ERROR_MESSAGE = "Something went wrong. Please try again.";
 
 function wire(form: HTMLFormElement) {
