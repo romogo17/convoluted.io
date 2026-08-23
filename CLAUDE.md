@@ -33,21 +33,14 @@ featured: false
 
 Do **not** add `minutesRead` or `lastModified` — they are injected at build time.
 
-To use prose components in MDX, import them at the top of the file:
+Prose components live in `src/components/prose/`. Import the ones you use at the top of the file:
 
-```mdx
-import Callout from "../../components/prose/Callout.astro";
-import Expand from "../../components/prose/Expand.astro";
-import TokenTable from "../../components/prose/TokenTable.astro";
-```
+- **`<Callout>`** — tones `tip` (default), `warning`, `danger`, `info`. `title` prop overrides the label.
+- **`<Expand>`** — collapsible block for optional detail. `title` prop (default `"Show more"`).
+- **`<TokenTable>`** — filterable GitHub token-type reference. No props; data is embedded.
+- **`<FlowDiagram>`** — figure wrapper for a hand-authored inline `<svg>`. `label` (accessibility) and `caption` props.
 
-**`<Callout>`** — tones: `tip` (default) · `warning` · `danger` · `info`. Optional `title` prop overrides the default label. Animates in on scroll via IntersectionObserver.
-
-**`<Expand>`** — collapsible disclosure block. Optional `title` prop (default `"Show more"`). Use for optional detail that would interrupt the main flow if always visible.
-
-**`<TokenTable>`** — filterable token reference for GitHub auth token types. Self-contained (no props); token data is embedded in the component.
-
-**Code blocks** — powered by `astro-expressive-code`. Add `title="filename"` to a code fence for a header. Shell languages (`bash`, `sh`, `zsh`) automatically get a terminal frame; other languages get an editor tab. Use `ins={1,3}` / `del={2}` for diff highlighting.
+**Code blocks** use `astro-expressive-code`: `title="filename"` adds a header, shell languages get a terminal frame, and `ins={1,3}` / `del={2}` mark diffs.
 
 ## Design system
 
@@ -61,17 +54,29 @@ Fonts (loaded from Google Fonts): `var(--font-serif)` → Newsreader · `var(--f
 ## Non-obvious decisions
 
 - **Prose components are Astro, not React** — `src/components/prose/` renders at build time (no hydration cost). Only add `client:*` if a component genuinely needs browser interactivity.
-- **`minutesRead` and `lastModified` are injected at build time** by remark plugins (`src/plugins/`), not set in frontmatter. Do not add them manually to post front matter.
 
 ## Writing voice
 
 Posts should follow the design system's editorial register:
 
-- **Perspective:** first-person, practitioner writing to a peer. "I've been paged at 3am" not "one might encounter".
+- **Perspective:** first-person for your own experience, second-person to put the reader in the scene. "I've been paged at 3am"; "you're one offboarding away from an incident nobody can trace." Never "one might encounter".
 - **Tone:** direct and dry, with occasional wry aside. Never breathless or hype-y.
+- **Openings:** open on a concrete scene, not an abstract thesis. Show the lived moment, then let the point land. "A job fails at 2am and the token belonged to someone who left in March" beats "PATs have a structural weakness". Same rule for section openers: give them a subject and a verb. A verbless fragment ("For CLIs that can't open a browser.") drops the reader mid-idea instead of leading them in.
 - **Sentences:** short to medium. Vary rhythm. End paragraphs on the point, not the caveat.
 - **Vocabulary:** use the domain's own words precisely. Define once if obscure; never define the obvious.
 - **Metaphor:** the "untangling" / thread motif lives in the brand — lean into it where natural, not forced.
 - **Code snippets:** show only what's needed. Annotate surprising lines in prose, not inline comments.
 - **Headers:** sentence case, no trailing punctuation. Max three levels deep in a post.
 - **Callouts:** use sparingly. Callout text should be the sentence worth pulling out, not a summary of the paragraph it follows.
+
+### Avoid these AI tells
+
+Draft prose slides into these without noticing. Catch them on review:
+
+- **No em dashes.** End the sentence or use a comma. Don't swap in parentheses or en dashes instead.
+- **No negative parallelism** ("The change is small. The improvement is not."). State the point once, directly.
+- **No colon as a mid-sentence connector.** Colons are fine before a list or example, not to bolt two clauses together.
+- **Watch the rule of three.** Use the number of items the idea actually has, not a reflexive triad.
+- **No bold-label-colon list items** that restate the line ("**Speed:** it's faster."). Write prose, or a bold lead-in that ends in a period and adds new detail.
+- **Say what it does, not how it feels.** Replace "SQL you can read" with the mechanism or a number.
+- **Prefer plain words and active voice.** "use" over "leverage", "the compiler validates" over "queries are validated".
