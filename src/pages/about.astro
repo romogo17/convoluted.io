@@ -1,23 +1,34 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
+import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
-<BaseLayout title="About" description="Roberto Mora — platform engineer and writer behind convoluted.io.">
+<BaseLayout
+  title="About"
+  description="Roberto Mora, the platform engineer and Engineering Manager writing convoluted.io."
+>
   <div class="page">
     <!-- Intro -->
     <section class="about-hero">
       <div class="about-hero__text">
         <span class="eyebrow">About</span>
         <h1 class="about-hero__name">Roberto Mora</h1>
-        <p class="about-hero__handle">Platform engineer · @romogo17</p>
-        <p class="about-hero__bio">
-          I've been paged at 3am for too many database incidents. I write convoluted.io to turn
-          hard-won lessons into something you can read with your morning coffee — before the
-          incident happens to you.
+        <p class="about-hero__handle">
+          Platform Engineering · Costa Rica · @romogo17
         </p>
         <p class="about-hero__bio">
-          I work on platform engineering: Kubernetes, databases, observability, and the CI
-          pipelines that are one bad deploy away from your weekend.
+          When I was eight, an older cousin moved in with us to start a degree
+          in Information Systems Engineering, and I got hooked watching what she
+          did at the computer. Ten years later I enrolled in the same degree.
+          These days I'm an Engineering Manager at Experian, which I joined out
+          of a graduate program and where I've worked my way up to be an
+          engineering leader.
+        </p>
+        <p class="about-hero__bio">
+          I write convoluted.io to understand things better by writing them
+          down, and to teach. I was a TA in university and I've missed it. I
+          treat the writing, and the work behind it, as a craft: I'm after
+          excellence rather than perfection, giving the best I have to whatever
+          I'm working on.
         </p>
       </div>
       <div class="about-hero__avatar" aria-hidden="true">RM</div>
@@ -28,44 +39,96 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     <!-- Now -->
     <section class="about-section">
       <h2 class="about-section__title">Now</h2>
-      <p>Building internal platforms, writing about what I learn, and occasionally untangling someone else's Terraform state.</p>
+      <p>
+        When I'm not managing a platform team or writing here, I'm most likely
+        on a padel court. That's the real obsession, with some tennis on the
+        side. I read, I train a lot, and I hike whenever I can; Costa Rica is
+        generous with trails. Last year I finished a master's in AI, mostly to
+        understand it from the inside. Pura vida isn't just a slogan here, and I
+        try to bring a bit of it to the writing.
+      </p>
     </section>
 
     <!-- Topics -->
     <section class="about-section">
       <h2 class="about-section__title">What I write about</h2>
       <ul class="topic-list">
-        <li><strong>Databases</strong> — Postgres, connection pools, migrations that don't hurt</li>
-        <li><strong>Platform engineering</strong> — Kubernetes, Helm, the developer experience layer</li>
-        <li><strong>DevOps</strong> — CI/CD, observability, being on-call without burning out</li>
-        <li><strong>Systems thinking</strong> — why things break, how to reason about complexity</li>
+        <li>
+          <strong>Platform engineering</strong>: the developer-experience layer
+          and the SRE mindset
+        </li>
+        <li>
+          <strong>Distributed systems</strong>: system design and reasoning
+          about complexity
+        </li>
+        <li>
+          <strong>Containers and orchestration</strong>: Kubernetes and the
+          machinery around it
+        </li>
+        <li>
+          <strong>Databases</strong>, PostgreSQL first: internals, extensions,
+          the parts people skip
+        </li>
       </ul>
     </section>
 
-    <section class="subscribe-block" id="subscribe">
-      <img src="/knot-motif.svg" class="subscribe-block__motif" width="280" height="56" alt="" aria-hidden="true" />
-      <h2 class="subscribe-block__title">Stay in the loop</h2>
-      <p class="subscribe-block__subhead">~2 posts a month · no spam · unsubscribe anytime</p>
-      <form
-        class="subscribe-block__form"
-        action="https://buttondown.com/api/emails/embed-subscribe/convoluted.io"
-        method="post"
-        data-newsletter
-      >
-        <div class="subscribe-block__input-wrap">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="subscribe-block__icon" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-          <input
-            type="email"
-            name="email"
-            placeholder="you@domain.dev"
-            aria-label="Email address"
-            class="subscribe-block__input"
-            required
-          />
-        </div>
-        <button type="submit" class="subscribe-block__btn">Subscribe</button>
-      </form>
-      <p class="subscribe-block__status" data-newsletter-status role="status" aria-live="polite"></p>
+    <!-- Contact -->
+    <section class="about-section">
+      <h2 class="about-section__title">Elsewhere</h2>
+      <div class="contact-links">
+        <a
+          href="https://www.linkedin.com/in/romogo17"
+          rel="noopener noreferrer"
+          target="_blank"
+          class="contact-link"
+        >
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            aria-hidden="true"
+            ><path
+              d="M20.45 20.45h-3.56v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.14 1.44-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.55V9h3.57v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0z"
+            ></path></svg
+          >
+          LinkedIn
+        </a>
+        <a
+          href="https://github.com/romogo17"
+          rel="noopener noreferrer"
+          target="_blank"
+          class="contact-link"
+        >
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            aria-hidden="true"
+            ><path
+              d="M12 .5C5.37.5 0 5.78 0 12.29c0 5.2 3.44 9.6 8.2 11.16.6.11.82-.25.82-.56v-1.96c-3.34.72-4.04-1.6-4.04-1.6-.55-1.37-1.33-1.74-1.33-1.74-1.09-.74.08-.73.08-.73 1.2.09 1.83 1.23 1.83 1.23 1.07 1.82 2.81 1.3 3.5.99.1-.77.42-1.3.76-1.6-2.67-.3-5.47-1.32-5.47-5.87 0-1.3.47-2.36 1.24-3.19-.13-.3-.54-1.52.11-3.18 0 0 1.01-.32 3.3 1.22a11.5 11.5 0 0 1 6 0c2.29-1.54 3.3-1.22 3.3-1.22.65 1.66.24 2.88.12 3.18.77.83 1.23 1.89 1.23 3.19 0 4.56-2.81 5.57-5.49 5.86.43.37.82 1.1.82 2.22v3.29c0 .32.21.69.82.57A12.02 12.02 0 0 0 24 12.29C24 5.78 18.63.5 12 .5Z"
+            ></path></svg
+          >
+          GitHub
+        </a>
+        <a href="mailto:romogo17@gmail.com" class="contact-link">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+            ><rect width="20" height="16" x="2" y="4" rx="2"></rect><path
+              d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg
+          >
+          Email
+        </a>
+      </div>
     </section>
   </div>
 </BaseLayout>
@@ -86,9 +149,14 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     margin-bottom: 48px;
   }
 
-  .about-hero__text { flex: 1; }
+  .about-hero__text {
+    flex: 1;
+  }
 
-  .eyebrow { display: block; margin-bottom: 12px; }
+  .eyebrow {
+    display: block;
+    margin-bottom: 12px;
+  }
 
   .about-hero__name {
     font-family: var(--font-serif);
@@ -136,7 +204,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   }
 
   /* ——— Sections ——— */
-  .about-section { margin-bottom: 40px; }
+  .about-section {
+    margin-bottom: 40px;
+  }
 
   .about-section__title {
     font-family: var(--font-serif);
@@ -165,121 +235,48 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   }
 
   .topic-list li::before {
-    content: '→';
+    content: "→";
     position: absolute;
     left: 0;
     color: var(--color-green-500);
     font-weight: 600;
   }
 
-  /* ——— Subscribe block ——— */
-  .subscribe-block {
-    margin-top: 56px;
-    padding: 36px 32px;
-    background: var(--surface-inverse);
-    border-radius: 24px;
-    color: var(--text-inverse);
-  }
-
-  .subscribe-block__motif {
-    filter: brightness(0) invert(1);
-    opacity: 0.25;
-    margin-bottom: 20px;
-    max-width: 100%;
-  }
-
-  .subscribe-block__title {
-    font-family: var(--font-serif);
-    font-size: 2rem;
-    font-weight: 500;
-    color: var(--text-inverse);
-    letter-spacing: -0.02em;
-    margin: 0 0 8px;
-  }
-
-  .subscribe-block__subhead {
-    font-family: var(--font-mono);
-    font-size: 13px;
-    color: rgba(251, 249, 243, 0.55);
-    margin: 0 0 22px;
-  }
-
-  .subscribe-block__form {
+  /* ——— Contact links ——— */
+  .contact-links {
     display: flex;
-    gap: 8px;
-    max-width: 400px;
+    flex-wrap: wrap;
+    gap: 10px;
   }
 
-  .subscribe-block__input-wrap {
-    flex: 1;
-    position: relative;
-    display: flex;
+  .contact-link {
+    display: inline-flex;
     align-items: center;
-  }
-
-  .subscribe-block__icon {
-    position: absolute;
-    left: 12px;
-    color: rgba(251, 249, 243, 0.45);
-    pointer-events: none;
-  }
-
-  .subscribe-block__input {
-    width: 100%;
-    height: 40px;
-    padding: 0 12px 0 38px;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1.5px solid rgba(255, 255, 255, 0.15);
+    gap: 8px;
+    padding: 8px 14px;
+    border: 1px solid var(--border-subtle);
     border-radius: 11px;
-    font-family: var(--font-body);
-    font-size: 14px;
-    color: var(--text-inverse);
-    transition: border-color 120ms, box-shadow 120ms;
-  }
-
-  .subscribe-block__input::placeholder { color: rgba(251, 249, 243, 0.4); }
-
-  .subscribe-block__input:focus {
-    outline: none;
-    border-color: var(--color-lime-400);
-    box-shadow: 0 0 0 3px rgba(200, 227, 79, 0.2);
-  }
-
-  .subscribe-block__btn {
-    height: 40px;
-    padding: 0 18px;
-    background: var(--color-lime-400);
-    color: var(--color-ink-900);
     font-family: var(--font-ui);
     font-size: 14px;
-    font-weight: 700;
-    border: none;
-    border-radius: 11px;
-    cursor: pointer;
-    white-space: nowrap;
-    transition: background 120ms, transform 120ms;
+    font-weight: 600;
+    color: var(--text-body);
+    text-decoration: none;
+    transition:
+      border-color 120ms var(--ease-out),
+      color 120ms var(--ease-out),
+      background 120ms var(--ease-out);
   }
 
-  .subscribe-block__btn:hover { background: var(--color-lime-500); }
-  .subscribe-block__btn:active { transform: translateY(1px); }
-
-  .subscribe-block__status {
-    font-family: var(--font-mono);
-    font-size: 13px;
-    margin: 14px 0 0;
-    min-height: 1.2em;
-    color: rgba(251, 249, 243, 0.55);
+  .contact-link:hover {
+    border-color: var(--color-green-500);
+    color: var(--text-strong);
+    background: var(--surface-sunken);
+    text-decoration: none;
   }
-  .subscribe-block__status[data-state="success"] { color: var(--color-lime-400, #b6f14a); }
-  .subscribe-block__status[data-state="error"] { color: #ff9b8a; }
 
   @media (max-width: 520px) {
-    .about-hero { flex-direction: column-reverse; }
-    .subscribe-block__form { flex-direction: column; }
-    .subscribe-block__btn { width: 100%; }
+    .about-hero {
+      flex-direction: column-reverse;
+    }
   }
 </style>
-
-<script>
-  import "../scripts/newsletter";
-</script>
