@@ -40,6 +40,8 @@ const jsonLd = JSON.stringify({
   keywords: tags.join(', '),
   publisher: { '@type': 'Organization', name: 'convoluted.io', url: 'https://convoluted.io' },
 });
+
+const tagPill = 'inline-block rounded-full border border-green-100 bg-green-50 px-2.5 py-[3px] font-mono text-xs font-medium tracking-[0.01em] text-green-700';
 ---
 
 <BaseLayout title={title} description={description} ogType="article" ogImage={ogImage} author="Roberto Mora">
@@ -49,42 +51,46 @@ const jsonLd = JSON.stringify({
     {tags.map(t => <meta property="article:tag" content={t} />)}
     <script type="application/ld+json" set:html={jsonLd} />
   </Fragment>
-  <article class="article">
+  <article class="mx-auto max-w-prose px-6 pb-20 lg:max-w-[60rem] lg:px-10 xl:max-w-[65rem] xl:px-12">
     <!-- Article header -->
-    <div class="article__header">
-      <a href="/" class="article__back">
+    <div class="pt-8">
+      <a href="/" class="mb-[26px] inline-flex items-center gap-1.5 text-sm font-semibold text-muted no-underline transition-colors duration-150 ease-brand hover:text-ink-900 hover:no-underline">
         <ArrowLeft size={15} />
         All writing
       </a>
 
-      <div class="article__tags">
-        {tags.map(t => <span class="article__tag">{t}</span>)}
+      <div class="mb-4 flex flex-wrap gap-[7px]">
+        {tags.map(t => <span class={tagPill}>{t}</span>)}
       </div>
 
-      <h1 class="article__title">{title}</h1>
+      <h1 class="mb-4 font-serif text-[clamp(2rem,5vw,2.75rem)] leading-[1.08] font-medium tracking-[-0.025em] text-balance text-ink-900">{title}</h1>
 
       {description && (
-        <p class="article__dek">{description}</p>
+        <p class="mb-6 font-serif text-[1.3125rem] leading-[1.5] text-muted italic">{description}</p>
       )}
 
-      <div class="article__byline">
-        <span class="article__avatar" aria-hidden="true">RM</span>
-        <div class="article__byline-text">
-          <span class="article__author">Roberto Mora</span>
-          <span class="article__date-read">
+      <div class="flex flex-wrap items-center gap-3 border-b border-paper-300 pb-[22px]">
+        <span class="inline-flex size-[38px] shrink-0 items-center justify-center rounded-full bg-green-100 font-mono text-[11px] font-semibold text-green-800" aria-hidden="true">RM</span>
+        <div class="flex flex-col gap-0.5 leading-[1.3]">
+          <span class="text-[14.5px] font-semibold text-ink-900">Roberto Mora</span>
+          <span class="flex flex-wrap items-center gap-x-4 gap-y-2 text-[13px] text-faint">
             <time datetime={pubDate.toISOString()}>{dateStr}</time>
             {lastModifiedStr && lastModifiedStr !== dateStr && (
-              <span class="article__updated">(Updated {lastModifiedStr})</span>
+              <span class="opacity-70">(Updated {lastModifiedStr})</span>
             )}
-            {minutesRead && <span class="article__read-time">{minutesRead} min read</span>}
+            {minutesRead && <span class="before:mr-1.5 before:content-['·']">{minutesRead} min read</span>}
           </span>
         </div>
-        <div class="article__byline-actions">
-          <button class="article__action-btn" data-share aria-label="Share this post">
-            <span class="article__action-icon" data-share-icon>
+        <div class="ml-auto flex gap-1.5">
+          <button
+            class="group inline-flex h-[30px] items-center gap-[5px] rounded-[8px] border-[1.5px] border-paper-400 bg-surface-raised px-2.5 font-sans text-[13px] font-semibold text-muted transition-colors duration-150 ease-brand hover:bg-surface-sunken hover:text-ink-900 data-[copied]:text-green-700 data-[copied]:hover:text-green-700"
+            data-share
+            aria-label="Share this post"
+          >
+            <span class="inline-flex items-center group-data-[copied]:hidden" data-share-icon>
               <Share2 size={15} />
             </span>
-            <span class="article__action-icon article__action-icon--done" data-share-done aria-hidden="true">
+            <span class="hidden items-center text-green-600 group-data-[copied]:inline-flex" data-share-done aria-hidden="true">
               <Check size={15} />
             </span>
             <span data-share-label>Share</span>
@@ -94,23 +100,23 @@ const jsonLd = JSON.stringify({
     </div>
 
     <!-- Article body -->
-    <div class="prose article__body">
+    <div class="prose prose-brand max-w-none pt-7">
       <slot />
     </div>
 
     <!-- Article footer -->
-    <div class="article__footer">
-      <div class="article__footer-tags">
-        {tags.map(t => <span class="article__tag">{t}</span>)}
+    <div class="mt-10">
+      <div class="mb-7 flex flex-wrap gap-[7px]">
+        {tags.map(t => <span class={tagPill}>{t}</span>)}
       </div>
 
       <!-- Author bio -->
-      <div class="author-bio">
-        <span class="author-bio__avatar" aria-hidden="true">RM</span>
+      <div class="mb-8 flex gap-4 rounded-lg border border-green-100 bg-green-50 p-[22px]">
+        <span class="inline-flex size-12 shrink-0 items-center justify-center rounded-full bg-green-200 font-mono text-[13px] font-semibold text-green-800" aria-hidden="true">RM</span>
         <div>
-          <div class="author-bio__name">Roberto Mora</div>
-          <div class="author-bio__handle">@romogo17</div>
-          <p class="author-bio__bio">
+          <div class="mb-0.5 text-base font-bold text-ink-900">Roberto Mora</div>
+          <div class="mb-2 font-mono text-[13.5px] text-green-700">@romogo17</div>
+          <p class="m-0 text-[14.5px] leading-[1.6] text-body">
             Platform engineer who has been on call for one too many database incidents. I write
             convoluted.io to turn hard-won 3am lessons into something you can read with your
             morning coffee.
@@ -120,286 +126,25 @@ const jsonLd = JSON.stringify({
 
       <!-- Read next -->
       {nextPost && (
-        <div class="read-next">
-          <span class="eyebrow">Read next</span>
+        <div>
+          <span class="mb-2.5 block font-mono text-xs font-medium tracking-[0.08em] text-muted uppercase">Read next</span>
           <a
             href={nextSlug ?? '#'}
-            class="read-next__card"
+            class="flex items-center gap-3 rounded-lg border border-paper-400 bg-surface-card px-[18px] py-4 text-inherit no-underline transition-[box-shadow,border-color] duration-200 ease-brand hover:border-green-200 hover:no-underline hover:shadow-md"
           >
             <div>
-              <div class="read-next__title">{nextPost.data.title}</div>
-              <div class="read-next__meta">
+              <div class="mb-[3px] font-serif text-[19px] text-ink-900">{nextPost.data.title}</div>
+              <div class="text-[13.5px] text-muted">
                 {nextPost.data.minutesRead ?? '—'} min · {nextPost.data.tags[0]}
               </div>
             </div>
-            <ArrowLeft size={20} style="transform: rotate(180deg); color: var(--color-green-600);" />
+            <ArrowLeft size={20} class="rotate-180 text-green-600" />
           </a>
         </div>
       )}
     </div>
   </article>
 </BaseLayout>
-
-<style>
-  .article {
-    max-width: var(--container-prose);
-    margin: 0 auto;
-    padding: 0 24px 80px;
-  }
-
-  @media (min-width: 1024px) {
-    .article {
-      max-width: 60rem;
-      padding-left: 40px;
-      padding-right: 40px;
-    }
-  }
-
-  @media (min-width: 1280px) {
-    .article {
-      max-width: 65rem;
-      padding-left: 48px;
-      padding-right: 48px;
-    }
-  }
-
-  .article__header { padding-top: 32px; }
-
-  .article__back {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--text-muted);
-    text-decoration: none;
-    margin-bottom: 26px;
-    transition: color 120ms var(--ease-out);
-  }
-  .article__back:hover { color: var(--text-strong); text-decoration: none; }
-
-  .article__tags {
-    display: flex;
-    gap: 7px;
-    flex-wrap: wrap;
-    margin-bottom: 16px;
-  }
-
-  .article__tag {
-    display: inline-block;
-    font-family: var(--font-mono);
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--color-green-700);
-    background: var(--color-green-50);
-    border: 1px solid var(--color-green-100);
-    border-radius: 999px;
-    padding: 3px 10px;
-    letter-spacing: 0.01em;
-  }
-
-  .article__title {
-    font-family: var(--font-serif);
-    font-size: clamp(2rem, 5vw, 2.75rem);
-    line-height: 1.08;
-    color: var(--text-strong);
-    letter-spacing: -0.025em;
-    font-weight: 500;
-    margin: 0 0 16px;
-    text-wrap: balance;
-  }
-
-  .article__dek {
-    font-family: var(--font-serif);
-    font-size: 1.3125rem;
-    line-height: 1.5;
-    color: var(--text-muted);
-    font-style: italic;
-    margin: 0 0 24px;
-  }
-
-  .article__byline {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding-bottom: 22px;
-    border-bottom: 1px solid var(--border-subtle);
-    flex-wrap: wrap;
-  }
-
-  .article__avatar {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 38px;
-    height: 38px;
-    border-radius: 50%;
-    background: var(--color-green-100);
-    color: var(--color-green-800);
-    font-family: var(--font-mono);
-    font-size: 11px;
-    font-weight: 600;
-    flex-shrink: 0;
-  }
-
-  .article__byline-text {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    line-height: 1.3;
-  }
-
-  .article__author {
-    font-size: 14.5px;
-    font-weight: 600;
-    color: var(--text-strong);
-  }
-
-  .article__date-read {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 8px 16px;
-    font-size: 13px;
-    color: var(--text-faint);
-  }
-
-  .article__updated {
-    opacity: 0.7;
-  }
-
-  .article__read-time::before {
-    content: '·';
-    margin-right: 6px;
-  }
-
-  .article__byline-actions {
-    margin-left: auto;
-    display: flex;
-    gap: 6px;
-  }
-
-  .article__action-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    height: 30px;
-    padding: 0 10px;
-    background: var(--surface-raised);
-    color: var(--text-muted);
-    font-family: var(--font-ui);
-    font-size: 13px;
-    font-weight: 600;
-    border: 1.5px solid var(--border-default);
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background 120ms var(--ease-out), color 120ms var(--ease-out);
-  }
-  .article__action-btn:hover { background: var(--surface-sunken); color: var(--text-strong); }
-
-  .article__action-icon {
-    display: inline-flex;
-    align-items: center;
-  }
-  .article__action-icon--done { display: none; color: var(--color-green-600); }
-  .article__action-btn[data-copied] .article__action-icon { display: none; }
-  .article__action-btn[data-copied] .article__action-icon--done { display: inline-flex; }
-  .article__action-btn[data-copied] { color: var(--color-green-700); }
-
-  .article__body {
-    padding-top: 28px;
-  }
-
-  .article__footer {
-    margin-top: 40px;
-  }
-
-  .article__footer-tags {
-    display: flex;
-    gap: 7px;
-    flex-wrap: wrap;
-    margin-bottom: 28px;
-  }
-
-  .author-bio {
-    display: flex;
-    gap: 16px;
-    padding: 22px;
-    background: var(--color-green-50);
-    border: 1px solid var(--color-green-100);
-    border-radius: 16px;
-    margin-bottom: 32px;
-  }
-
-  .author-bio__avatar {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    background: var(--color-green-200);
-    color: var(--color-green-800);
-    font-family: var(--font-mono);
-    font-size: 13px;
-    font-weight: 600;
-    flex-shrink: 0;
-  }
-
-  .author-bio__name {
-    font-size: 16px;
-    font-weight: 700;
-    color: var(--text-strong);
-    margin-bottom: 2px;
-  }
-
-  .author-bio__handle {
-    font-size: 13.5px;
-    color: var(--color-green-700);
-    font-family: var(--font-mono);
-    margin-bottom: 8px;
-  }
-
-  .author-bio__bio {
-    font-size: 14.5px;
-    line-height: 1.6;
-    color: var(--text-body);
-    margin: 0;
-  }
-
-  .read-next { }
-
-  .read-next .eyebrow {
-    display: block;
-    margin-bottom: 10px;
-  }
-
-  .read-next__card {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 16px 18px;
-    border: 1px solid var(--border-default);
-    border-radius: 16px;
-    background: var(--surface-card);
-    text-decoration: none;
-    color: inherit;
-    transition: box-shadow 200ms var(--ease-out), border-color 200ms var(--ease-out);
-  }
-  .read-next__card:hover { box-shadow: var(--shadow-md); border-color: var(--color-green-200); text-decoration: none; color: inherit; }
-
-  .read-next__title {
-    font-family: var(--font-serif);
-    font-size: 19px;
-    color: var(--text-strong);
-    margin-bottom: 3px;
-  }
-
-  .read-next__meta {
-    font-size: 13.5px;
-    color: var(--text-muted);
-  }
-</style>
 
 <script>
   // Share button: native share sheet where available (mobile), copy-link

@@ -8,162 +8,45 @@ const isAbout = pathname.startsWith('/about');
 const newsletterEnabled = import.meta.env.PUBLIC_NEWSLETTER_ENABLED === 'true';
 ---
 
-<header class="site-header">
-  <div class="site-header__inner">
-    <a href="/" class="logo" aria-label="convoluted.io home">
+<header class="sticky top-0 z-[100] border-b border-paper-300 bg-surface-page/82 backdrop-blur-[10px] backdrop-saturate-[1.4]">
+  <div class="mx-auto flex max-w-page items-center gap-7 px-6 py-[13px] max-[600px]:gap-4">
+    <a href="/" class="inline-flex shrink-0 items-center gap-2.5 no-underline" aria-label="convoluted.io home">
       <img src="/logo-mark.svg" width="40" height="24" alt="" />
-      <span class="logo__wordmark">convoluted<span class="logo__dot">.io</span></span>
+      <span class="font-serif text-[20px] leading-none font-medium tracking-[-0.02em] text-ink-900 max-[600px]:hidden"
+        >convoluted<span class="text-green-600">.io</span></span
+      >
     </a>
 
-    <nav class="site-nav" aria-label="Primary">
-      <a href="/" class="nav-link" aria-current={isWriting ? 'page' : undefined}>Writing</a>
-      <a href="/about" class="nav-link" aria-current={isAbout ? 'page' : undefined}>About</a>
+    <nav class="ml-2 flex items-center gap-5 max-[600px]:ml-0 max-[600px]:gap-3.5" aria-label="Primary">
+      <a
+        href="/"
+        class="relative px-0.5 py-1.5 font-sans text-[15px] font-semibold text-muted no-underline transition-colors duration-150 ease-brand hover:text-ink-900 aria-[current=page]:text-green-700 aria-[current=page]:after:absolute aria-[current=page]:after:inset-x-0 aria-[current=page]:after:-bottom-0.5 aria-[current=page]:after:h-0.5 aria-[current=page]:after:rounded-full aria-[current=page]:after:bg-green-500 aria-[current=page]:after:content-['']"
+        aria-current={isWriting ? 'page' : undefined}>Writing</a
+      >
+      <a
+        href="/about"
+        class="relative px-0.5 py-1.5 font-sans text-[15px] font-semibold text-muted no-underline transition-colors duration-150 ease-brand hover:text-ink-900 aria-[current=page]:text-green-700 aria-[current=page]:after:absolute aria-[current=page]:after:inset-x-0 aria-[current=page]:after:-bottom-0.5 aria-[current=page]:after:h-0.5 aria-[current=page]:after:rounded-full aria-[current=page]:after:bg-green-500 aria-[current=page]:after:content-['']"
+        aria-current={isAbout ? 'page' : undefined}>About</a
+      >
     </nav>
 
-    <div class="site-header__actions">
-      <a href="/rss.xml" class="icon-btn" aria-label="RSS feed">
+    <div class="ml-auto flex items-center gap-1.5">
+      <a
+        href="/rss.xml"
+        class="inline-flex size-[34px] items-center justify-center rounded-[9px] text-muted no-underline transition-colors duration-150 ease-brand hover:bg-surface-sunken hover:text-ink-900"
+        aria-label="RSS feed"
+      >
         <Rss size={18} />
       </a>
       {newsletterEnabled && (
-        <a href="/about#subscribe" class="btn-subscribe">
+        <a
+          href="/about#subscribe"
+          class="inline-flex h-8 items-center gap-1.5 rounded-[9px] bg-accent px-3 font-sans text-[13px] font-semibold text-paper-50 no-underline transition-[background,transform] duration-150 ease-brand hover:bg-accent-hover hover:text-paper-50 hover:no-underline active:translate-y-px max-[480px]:w-[34px] max-[480px]:justify-center max-[480px]:px-0"
+        >
           <Mail size={15} />
-          <span class="btn-subscribe__label">Subscribe</span>
+          <span class="max-[480px]:hidden">Subscribe</span>
         </a>
       )}
     </div>
   </div>
 </header>
-
-<style>
-  .site-header {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    background: color-mix(in srgb, var(--surface-page) 82%, transparent);
-    backdrop-filter: saturate(140%) blur(10px);
-    -webkit-backdrop-filter: saturate(140%) blur(10px);
-    border-bottom: 1px solid var(--border-subtle);
-  }
-
-  .site-header__inner {
-    max-width: var(--container-page);
-    margin: 0 auto;
-    padding: 13px 24px;
-    display: flex;
-    align-items: center;
-    gap: 28px;
-  }
-
-  .logo {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    text-decoration: none;
-    flex-shrink: 0;
-  }
-
-  .logo__wordmark {
-    font-family: var(--font-serif);
-    font-size: 20px;
-    font-weight: 500;
-    color: var(--text-strong);
-    letter-spacing: -0.02em;
-    line-height: 1;
-  }
-
-  .logo__dot { color: var(--color-green-600); }
-
-  .site-nav {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    margin-left: 8px;
-  }
-
-  .nav-link {
-    font-family: var(--font-ui);
-    font-size: 15px;
-    font-weight: 600;
-    color: var(--text-muted);
-    text-decoration: none;
-    padding: 6px 2px;
-    position: relative;
-    transition: color 120ms var(--ease-out);
-  }
-
-  .nav-link:hover { color: var(--text-strong); }
-
-  .nav-link[aria-current="page"] {
-    color: var(--color-green-700);
-  }
-
-  .nav-link[aria-current="page"]::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: -2px;
-    height: 2px;
-    background: var(--color-green-500);
-    border-radius: 2px;
-  }
-
-  .site-header__actions {
-    margin-left: auto;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-
-  .icon-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 34px;
-    height: 34px;
-    border-radius: 9px;
-    color: var(--text-muted);
-    text-decoration: none;
-    transition: background 120ms var(--ease-out), color 120ms var(--ease-out);
-  }
-
-  .icon-btn:hover {
-    background: var(--surface-sunken);
-    color: var(--text-strong);
-  }
-
-  .btn-subscribe {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    height: 32px;
-    padding: 0 12px;
-    background: var(--accent);
-    color: var(--color-paper-50);
-    font-family: var(--font-ui);
-    font-size: 13px;
-    font-weight: 600;
-    border-radius: 9px;
-    text-decoration: none;
-    transition: background 120ms var(--ease-out), transform 120ms var(--ease-out);
-  }
-
-  .btn-subscribe:hover {
-    background: var(--accent-hover);
-    color: var(--color-paper-50);
-    text-decoration: none;
-  }
-
-  .btn-subscribe:active { transform: translateY(1px); }
-
-  @media (max-width: 600px) {
-    .logo__wordmark { display: none; }
-    .site-header__inner { gap: 16px; }
-    .site-nav { gap: 14px; margin-left: 0; }
-  }
-
-  @media (max-width: 480px) {
-    .btn-subscribe__label { display: none; }
-    .btn-subscribe { width: 34px; padding: 0; justify-content: center; }
-  }
-</style>
