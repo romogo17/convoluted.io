@@ -7,72 +7,14 @@ interface Props {
 const { title = 'Show more' } = Astro.props;
 ---
 
-<details class="expand">
-  <summary class="expand__summary">
-    <span class="expand__chevron" aria-hidden="true">
+<details class="group my-5 overflow-hidden rounded-md border border-paper-300 bg-surface-card">
+  <summary class="flex list-none items-center gap-[7px] px-3.5 py-2.5 font-sans text-sm font-semibold text-muted transition-[color,background] duration-150 ease-brand marker:hidden select-none hover:bg-surface-sunken hover:text-ink-900 [&::-webkit-details-marker]:hidden">
+    <span class="inline-flex shrink-0 items-center transition-transform duration-200 ease-brand group-open:rotate-90" aria-hidden="true">
       <ChevronRight size={13} />
     </span>
-    <span class="expand__label">{title}</span>
+    <span class="leading-none">{title}</span>
   </summary>
-  <div class="expand__body">
+  <div class="border-t border-paper-300 px-3.5 [&>*:first-child]:mt-3.5 [&>*:last-child]:mb-3.5">
     <slot />
   </div>
 </details>
-
-<style>
-  .expand {
-    margin: 1.25rem 0;
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-md);
-    background: var(--surface-card);
-    overflow: hidden;
-  }
-
-  .expand__summary {
-    display: flex;
-    align-items: center;
-    gap: 7px;
-    padding: 10px 14px;
-    font-family: var(--font-ui);
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--text-muted);
-    cursor: pointer;
-    list-style: none;
-    user-select: none;
-    transition: color var(--dur-fast) var(--ease-out), background var(--dur-fast) var(--ease-out);
-  }
-
-  /* Hide native marker in all browsers */
-  .expand__summary::-webkit-details-marker { display: none; }
-  .expand__summary::marker { display: none; }
-
-  .expand__summary:hover {
-    color: var(--text-strong);
-    background: var(--surface-sunken);
-  }
-
-  .expand__chevron {
-    display: inline-flex;
-    align-items: center;
-    flex-shrink: 0;
-    transition: transform var(--dur-base) var(--ease-out);
-  }
-
-  .expand[open] > .expand__summary .expand__chevron {
-    transform: rotate(90deg);
-  }
-
-  .expand__label {
-    line-height: 1;
-  }
-
-  .expand__body {
-    border-top: 1px solid var(--border-subtle);
-    padding: 0 14px;
-  }
-
-  /* Collapse the first/last child's outer margin into padding */
-  .expand__body :global(> *:first-child) { margin-top: 14px; }
-  .expand__body :global(> *:last-child)  { margin-bottom: 14px; }
-</style>

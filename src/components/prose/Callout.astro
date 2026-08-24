@@ -20,115 +20,53 @@ const defaultTitles: Record<Tone, string> = {
 const resolvedTitle = title ?? defaultTitles[tone];
 
 const Icon = { tip: Lightbulb, warning: AlertTriangle, danger: AlertCircle, info: Info }[tone];
+
+const toneClasses: Record<Tone, { wrap: string; icon: string; title: string }> = {
+  tip: {
+    wrap: 'border-l-green-500 bg-green-50 border-t-green-100 border-r-green-100 border-b-green-100',
+    icon: 'text-green-600',
+    title: 'text-green-800',
+  },
+  warning: {
+    wrap: 'border-l-amber-500 bg-amber-100 border-t-[#f0d9a0] border-r-[#f0d9a0] border-b-[#f0d9a0]',
+    icon: 'text-amber-700',
+    title: 'text-amber-700',
+  },
+  danger: {
+    wrap: 'border-l-clay-500 bg-clay-100 border-t-[#edc4ba] border-r-[#edc4ba] border-b-[#edc4ba]',
+    icon: 'text-clay-700',
+    title: 'text-clay-700',
+  },
+  info: {
+    wrap: 'border-l-slate-500 bg-slate-100 border-t-[#c4d0e8] border-r-[#c4d0e8] border-b-[#c4d0e8]',
+    icon: 'text-slate-700',
+    title: 'text-slate-700',
+  },
+};
 ---
 
-<aside class:list={['callout', `callout--${tone}`]} data-animate>
-  <div class="callout__header">
-    <span class="callout__icon"><Icon size={16} /></span>
-    <span class="callout__title">{resolvedTitle}</span>
+<aside
+  class:list={[
+    'my-7 translate-y-2.5 rounded-r-md border-t border-r border-b border-l-4 px-[18px] py-4 opacity-0 data-[visible]:animate-callout-in',
+    toneClasses[tone].wrap,
+  ]}
+  data-animate
+>
+  <div class="mb-1.5 flex items-center gap-[7px]">
+    <span class:list={['inline-flex shrink-0 items-center', toneClasses[tone].icon]}><Icon size={16} /></span>
+    <span class:list={['font-mono text-[11px] font-semibold tracking-[0.07em] uppercase', toneClasses[tone].title]}>{resolvedTitle}</span>
   </div>
-  <div class="callout__body">
+  <div class="text-[0.9375rem] leading-[1.65] text-body [&_p:last-child]:mb-0 [&_p]:mb-2">
     <slot />
   </div>
 </aside>
-
-<style>
-  /* Entry animation — plays when .callout--visible is added by the observer */
-  @keyframes callout-in {
-    from { opacity: 0; transform: translateY(10px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  .callout {
-    --callout-accent: var(--color-green-500);
-    --callout-bg: var(--color-green-50);
-    --callout-border: var(--color-green-100);
-    --callout-icon: var(--color-green-600);
-    --callout-title: var(--color-green-800);
-
-    margin: 1.75rem 0;
-    padding: 16px 18px;
-    border-left: 4px solid var(--callout-accent);
-    border-radius: 0 11px 11px 0;
-    background: var(--callout-bg);
-    border-top: 1px solid var(--callout-border);
-    border-right: 1px solid var(--callout-border);
-    border-bottom: 1px solid var(--callout-border);
-
-    /* start hidden; observer adds --visible class */
-    opacity: 0;
-    transform: translateY(10px);
-  }
-
-  .callout.is-visible {
-    animation: callout-in 380ms var(--ease-out, cubic-bezier(0.22, 1, 0.36, 1)) forwards;
-  }
-
-  /* Tone variants */
-  .callout--warning {
-    --callout-accent: var(--color-amber-500);
-    --callout-bg: var(--color-amber-100);
-    --callout-border: #f0d9a0;
-    --callout-icon: var(--color-amber-700);
-    --callout-title: var(--color-amber-700);
-  }
-
-  .callout--danger {
-    --callout-accent: var(--color-clay-500);
-    --callout-bg: var(--color-clay-100);
-    --callout-border: #edc4ba;
-    --callout-icon: var(--color-clay-700);
-    --callout-title: var(--color-clay-700);
-  }
-
-  .callout--info {
-    --callout-accent: var(--color-slate-500);
-    --callout-bg: var(--color-slate-100);
-    --callout-border: #c4d0e8;
-    --callout-icon: var(--color-slate-700);
-    --callout-title: var(--color-slate-700);
-  }
-
-  .callout__header {
-    display: flex;
-    align-items: center;
-    gap: 7px;
-    margin-bottom: 6px;
-  }
-
-  .callout__icon {
-    color: var(--callout-icon);
-    display: inline-flex;
-    align-items: center;
-    flex-shrink: 0;
-  }
-
-  .callout__title {
-    font-family: var(--font-mono, monospace);
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.07em;
-    text-transform: uppercase;
-    color: var(--callout-title);
-  }
-
-  .callout__body {
-    font-size: 0.9375rem;
-    line-height: 1.65;
-    color: var(--text-body, #433e36);
-  }
-
-  /* Strip default prose margins from slotted content */
-  .callout__body :global(p:last-child) { margin-bottom: 0; }
-  .callout__body :global(p) { margin-bottom: 0.5rem; }
-</style>
 
 <script>
   const observer = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          entry.target.classList.add('is-visible');
+          entry.target.setAttribute('data-visible', '');
           observer.unobserve(entry.target);
         }
       });
@@ -136,5 +74,5 @@ const Icon = { tip: Lightbulb, warning: AlertTriangle, danger: AlertCircle, info
     { threshold: 0.15, rootMargin: '0px 0px -40px 0px' }
   );
 
-  document.querySelectorAll('.callout[data-animate]').forEach((el) => observer.observe(el));
+  document.querySelectorAll('[data-animate]').forEach((el) => observer.observe(el));
 </script>
