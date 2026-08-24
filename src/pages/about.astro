@@ -8,16 +8,16 @@ const newsletterEnabled = import.meta.env.PUBLIC_NEWSLETTER_ENABLED === "true";
   title="About"
   description="Roberto Mora, the platform engineer and Engineering Manager writing convoluted.io."
 >
-  <div class="page">
+  <div class="mx-auto max-w-prose px-6 pt-12 pb-20">
     <!-- Intro -->
-    <section class="about-hero">
-      <div class="about-hero__text">
-        <span class="eyebrow">About</span>
-        <h1 class="about-hero__name">Roberto Mora</h1>
-        <p class="about-hero__handle">
+    <section class="mb-12 flex items-start justify-between gap-8 max-[520px]:flex-col-reverse">
+      <div class="flex-1">
+        <span class="mb-3 block font-mono text-xs font-medium tracking-[0.08em] text-muted uppercase">About</span>
+        <h1 class="mb-1.5 font-serif text-[3rem] leading-[1.08] font-medium tracking-[-0.025em] text-ink-900">Roberto Mora</h1>
+        <p class="mb-5 font-mono text-sm text-green-700">
           Platform Engineering · Costa Rica · @romogo17
         </p>
-        <p class="about-hero__bio">
+        <p class="mb-4 text-[1.0625rem] leading-[1.72] text-body">
           When I was eight, an older cousin moved in with us to start a degree
           in Information Systems Engineering, and I got hooked watching what she
           did at the computer. Ten years later I enrolled in the same degree.
@@ -25,7 +25,7 @@ const newsletterEnabled = import.meta.env.PUBLIC_NEWSLETTER_ENABLED === "true";
           of a graduate program and where I've worked my way up to be an
           engineering leader.
         </p>
-        <p class="about-hero__bio">
+        <p class="mb-4 text-[1.0625rem] leading-[1.72] text-body">
           I write convoluted.io to understand things better by writing them
           down, and to teach. I was a TA in university and I've missed it. I
           treat the writing, and the work behind it, as a craft: I'm after
@@ -33,15 +33,15 @@ const newsletterEnabled = import.meta.env.PUBLIC_NEWSLETTER_ENABLED === "true";
           I'm working on.
         </p>
       </div>
-      <div class="about-hero__avatar" aria-hidden="true">RM</div>
+      <div class="flex size-20 shrink-0 items-center justify-center rounded-full bg-green-100 font-mono text-xl font-bold text-green-800" aria-hidden="true">RM</div>
     </section>
 
-    <hr class="about-divider" />
+    <hr class="mb-10 border-none border-t border-paper-300" />
 
     <!-- Now -->
-    <section class="about-section">
-      <h2 class="about-section__title">Now</h2>
-      <p>
+    <section class="mb-10">
+      <h2 class="mb-3.5 font-serif text-2xl font-medium tracking-[-0.01em] text-ink-900">Now</h2>
+      <p class="text-[1.0625rem] leading-[1.6] text-body">
         When I'm not managing a platform team or writing here, I'm most likely
         on a padel court. That's the real obsession, with some tennis on the
         side. I read, I train a lot, and I hike whenever I can; Costa Rica is
@@ -52,22 +52,22 @@ const newsletterEnabled = import.meta.env.PUBLIC_NEWSLETTER_ENABLED === "true";
     </section>
 
     <!-- Topics -->
-    <section class="about-section">
-      <h2 class="about-section__title">What I write about</h2>
-      <ul class="topic-list">
-        <li>
+    <section class="mb-10">
+      <h2 class="mb-3.5 font-serif text-2xl font-medium tracking-[-0.01em] text-ink-900">What I write about</h2>
+      <ul class="m-0 flex list-none flex-col gap-2.5 p-0">
+        <li class="relative pl-5 text-[1.0625rem] leading-[1.6] text-body before:absolute before:left-0 before:font-semibold before:text-green-500 before:content-['→']">
           <strong>Platform engineering</strong>: the developer-experience layer
           and the SRE mindset
         </li>
-        <li>
+        <li class="relative pl-5 text-[1.0625rem] leading-[1.6] text-body before:absolute before:left-0 before:font-semibold before:text-green-500 before:content-['→']">
           <strong>Distributed systems</strong>: system design and reasoning
           about complexity
         </li>
-        <li>
+        <li class="relative pl-5 text-[1.0625rem] leading-[1.6] text-body before:absolute before:left-0 before:font-semibold before:text-green-500 before:content-['→']">
           <strong>Containers and orchestration</strong>: Kubernetes and the
           machinery around it
         </li>
-        <li>
+        <li class="relative pl-5 text-[1.0625rem] leading-[1.6] text-body before:absolute before:left-0 before:font-semibold before:text-green-500 before:content-['→']">
           <strong>Databases</strong>, PostgreSQL first: internals, extensions,
           the parts people skip
         </li>
@@ -75,14 +75,14 @@ const newsletterEnabled = import.meta.env.PUBLIC_NEWSLETTER_ENABLED === "true";
     </section>
 
     <!-- Contact -->
-    <section class="about-section">
-      <h2 class="about-section__title">Elsewhere</h2>
-      <div class="contact-links">
+    <section class="mb-10">
+      <h2 class="mb-3.5 font-serif text-2xl font-medium tracking-[-0.01em] text-ink-900">Elsewhere</h2>
+      <div class="flex flex-wrap gap-2.5">
         <a
           href="https://www.linkedin.com/in/romogo17"
           rel="noopener noreferrer"
           target="_blank"
-          class="contact-link"
+          class="inline-flex items-center gap-2 rounded-md border border-paper-300 px-3.5 py-2 font-sans text-sm font-semibold text-body no-underline transition-[border-color,color,background] duration-150 ease-brand hover:border-green-500 hover:bg-surface-sunken hover:text-ink-900 hover:no-underline"
         >
           <svg
             width="16"
@@ -100,7 +100,7 @@ const newsletterEnabled = import.meta.env.PUBLIC_NEWSLETTER_ENABLED === "true";
           href="https://github.com/romogo17"
           rel="noopener noreferrer"
           target="_blank"
-          class="contact-link"
+          class="inline-flex items-center gap-2 rounded-md border border-paper-300 px-3.5 py-2 font-sans text-sm font-semibold text-body no-underline transition-[border-color,color,background] duration-150 ease-brand hover:border-green-500 hover:bg-surface-sunken hover:text-ink-900 hover:no-underline"
         >
           <svg
             width="16"
@@ -114,7 +114,7 @@ const newsletterEnabled = import.meta.env.PUBLIC_NEWSLETTER_ENABLED === "true";
           >
           GitHub
         </a>
-        <a href="mailto:romogo17@gmail.com" class="contact-link">
+        <a href="mailto:romogo17@gmail.com" class="inline-flex items-center gap-2 rounded-md border border-paper-300 px-3.5 py-2 font-sans text-sm font-semibold text-body no-underline transition-[border-color,color,background] duration-150 ease-brand hover:border-green-500 hover:bg-surface-sunken hover:text-ink-900 hover:no-underline">
           <svg
             width="16"
             height="16"
@@ -135,19 +135,19 @@ const newsletterEnabled = import.meta.env.PUBLIC_NEWSLETTER_ENABLED === "true";
 
     {
       newsletterEnabled && (
-        <section id="subscribe" class="about-section subscribe">
-          <h2 class="about-section__title">Subscribe</h2>
-          <p class="subscribe__lead">
+        <section id="subscribe" class="mb-10">
+          <h2 class="mb-3.5 font-serif text-2xl font-medium tracking-[-0.01em] text-ink-900">Subscribe</h2>
+          <p class="mb-[18px] text-[1.0625rem] leading-[1.6] text-body">
             New posts by email, about twice a month. No spam, unsubscribe
             anytime.
           </p>
           <form
-            class="subscribe__form"
+            class="flex max-w-[420px] gap-2 max-[520px]:flex-col"
             action="https://buttondown.com/api/emails/embed-subscribe/convoluted.io"
             method="post"
             data-newsletter
           >
-            <div class="subscribe__input-wrap">
+            <div class="relative flex flex-1 items-center">
               <svg
                 width="16"
                 height="16"
@@ -157,7 +157,7 @@ const newsletterEnabled = import.meta.env.PUBLIC_NEWSLETTER_ENABLED === "true";
                 stroke-width="2"
                 stroke-linecap="round"
                 stroke-linejoin="round"
-                class="subscribe__input-icon"
+                class="absolute left-3 shrink-0 pointer-events-none text-faint"
                 aria-hidden="true"
               >
                 <rect width="20" height="16" x="2" y="4" rx="2" />
@@ -168,14 +168,17 @@ const newsletterEnabled = import.meta.env.PUBLIC_NEWSLETTER_ENABLED === "true";
                 name="email"
                 placeholder="you@domain.dev"
                 aria-label="Email address"
-                class="subscribe__input"
+                class="h-10 w-full rounded-md border-[1.5px] border-paper-400 bg-surface-raised pr-3 pl-[38px] font-sans text-sm text-body transition-[border-color,box-shadow] duration-150 ease-brand focus:border-accent focus:shadow-focus focus:outline-none"
                 required
               />
             </div>
-            <button type="submit" class="subscribe__btn">Subscribe</button>
+            <button
+              type="submit"
+              class="h-10 rounded-md border-none bg-accent px-[18px] font-sans text-sm font-semibold whitespace-nowrap text-paper-50 transition-[background,transform] duration-150 ease-brand hover:bg-accent-hover active:translate-y-px max-[520px]:w-full"
+            >Subscribe</button>
           </form>
           <p
-            class="subscribe__status"
+            class="mt-3 mb-0 min-h-[1.2em] font-mono text-[12.5px] text-faint empty:hidden data-[state=success]:text-green-700 data-[state=error]:text-[#c0392b]"
             data-newsletter-status
             role="status"
             aria-live="polite"
@@ -185,240 +188,6 @@ const newsletterEnabled = import.meta.env.PUBLIC_NEWSLETTER_ENABLED === "true";
     }
   </div>
 </BaseLayout>
-
-<style>
-  .page {
-    max-width: var(--container-prose);
-    margin: 0 auto;
-    padding: 48px 24px 80px;
-  }
-
-  /* ——— Hero ——— */
-  .about-hero {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 32px;
-    margin-bottom: 48px;
-  }
-
-  .about-hero__text {
-    flex: 1;
-  }
-
-  .eyebrow {
-    display: block;
-    margin-bottom: 12px;
-  }
-
-  .about-hero__name {
-    font-family: var(--font-serif);
-    font-size: 3rem;
-    line-height: 1.08;
-    font-weight: 500;
-    letter-spacing: -0.025em;
-    color: var(--text-strong);
-    margin: 0 0 6px;
-  }
-
-  .about-hero__handle {
-    font-family: var(--font-mono);
-    font-size: 14px;
-    color: var(--color-green-700);
-    margin: 0 0 20px;
-  }
-
-  .about-hero__bio {
-    font-size: 1.0625rem;
-    line-height: 1.72;
-    color: var(--text-body);
-    margin: 0 0 16px;
-  }
-
-  .about-hero__avatar {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    background: var(--color-green-100);
-    color: var(--color-green-800);
-    font-family: var(--font-mono);
-    font-size: 20px;
-    font-weight: 700;
-    flex-shrink: 0;
-  }
-
-  .about-divider {
-    border: none;
-    border-top: 1px solid var(--border-subtle);
-    margin: 0 0 40px;
-  }
-
-  /* ——— Sections ——— */
-  .about-section {
-    margin-bottom: 40px;
-  }
-
-  .about-section__title {
-    font-family: var(--font-serif);
-    font-size: 1.5rem;
-    font-weight: 500;
-    color: var(--text-strong);
-    margin: 0 0 14px;
-    letter-spacing: -0.01em;
-  }
-
-  .topic-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .topic-list li {
-    font-size: 1.0625rem;
-    line-height: 1.6;
-    color: var(--text-body);
-    padding-left: 20px;
-    position: relative;
-  }
-
-  .topic-list li::before {
-    content: "→";
-    position: absolute;
-    left: 0;
-    color: var(--color-green-500);
-    font-weight: 600;
-  }
-
-  /* ——— Contact links ——— */
-  .contact-links {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-
-  .contact-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 14px;
-    border: 1px solid var(--border-subtle);
-    border-radius: 11px;
-    font-family: var(--font-ui);
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--text-body);
-    text-decoration: none;
-    transition:
-      border-color 120ms var(--ease-out),
-      color 120ms var(--ease-out),
-      background 120ms var(--ease-out);
-  }
-
-  .contact-link:hover {
-    border-color: var(--color-green-500);
-    color: var(--text-strong);
-    background: var(--surface-sunken);
-    text-decoration: none;
-  }
-
-  /* ——— Subscribe ——— */
-  .subscribe__lead {
-    font-size: 1.0625rem;
-    line-height: 1.6;
-    color: var(--text-body);
-    margin: 0 0 18px;
-  }
-
-  .subscribe__form {
-    display: flex;
-    gap: 8px;
-    max-width: 420px;
-  }
-
-  .subscribe__input-wrap {
-    flex: 1;
-    position: relative;
-    display: flex;
-    align-items: center;
-  }
-
-  .subscribe__input-icon {
-    position: absolute;
-    left: 12px;
-    color: var(--text-faint);
-    pointer-events: none;
-  }
-
-  .subscribe__input {
-    width: 100%;
-    height: 40px;
-    padding: 0 12px 0 38px;
-    background: var(--surface-raised);
-    border: 1.5px solid var(--border-default);
-    border-radius: 11px;
-    font-family: var(--font-body);
-    font-size: 14px;
-    color: var(--text-body);
-    transition:
-      border-color 120ms var(--ease-out),
-      box-shadow 120ms var(--ease-out);
-  }
-
-  .subscribe__input:focus {
-    outline: none;
-    border-color: var(--border-accent);
-    box-shadow: var(--ring-focus);
-  }
-
-  .subscribe__btn {
-    height: 40px;
-    padding: 0 18px;
-    background: var(--accent);
-    color: var(--color-paper-50);
-    font-family: var(--font-ui);
-    font-size: 14px;
-    font-weight: 600;
-    border: none;
-    border-radius: 11px;
-    cursor: pointer;
-    white-space: nowrap;
-    transition:
-      background 120ms var(--ease-out),
-      transform 120ms var(--ease-out);
-  }
-
-  .subscribe__btn:hover { background: var(--accent-hover); }
-  .subscribe__btn:active { transform: translateY(1px); }
-
-  .subscribe__status {
-    font-family: var(--font-mono);
-    font-size: 12.5px;
-    color: var(--text-faint);
-    margin: 12px 0 0;
-    min-height: 1.2em;
-  }
-  .subscribe__status:empty { display: none; }
-  .subscribe__status[data-state="success"] { color: var(--color-green-700); }
-  .subscribe__status[data-state="error"] { color: #c0392b; }
-
-  @media (max-width: 520px) {
-    .about-hero {
-      flex-direction: column-reverse;
-    }
-    .subscribe__form {
-      flex-direction: column;
-    }
-    .subscribe__btn {
-      width: 100%;
-    }
-  }
-</style>
 
 <script>
   import "../scripts/newsletter";

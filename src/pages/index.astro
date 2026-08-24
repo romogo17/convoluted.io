@@ -17,19 +17,19 @@ const newsletterEnabled = import.meta.env.PUBLIC_NEWSLETTER_ENABLED === 'true';
 
 <BaseLayout title="convoluted.io">
   <!-- Hero -->
-  <section class="hero">
-    <div class="hero__inner">
-      <div class="hero__eyebrow">
+  <section class="px-6 pt-14 pb-12 text-center">
+    <div class="mx-auto max-w-[760px]">
+      <div class="mb-[18px] inline-flex items-center gap-[9px] font-mono text-[13px] tracking-[0.08em] text-green-600 uppercase">
         <img src="/logo-mark.svg" width="16" height="10" alt="" aria-hidden="true" />
         engineering, untangled
       </div>
 
-      <h1 class="hero__headline">
+      <h1 class="mb-[18px] font-serif text-[clamp(2.25rem,6vw,3.5rem)] leading-[1.04] font-medium tracking-[-0.025em] text-balance text-ink-900">
         Most systems aren't hard.<br />
-        They're just <em>tangled</em>.
+        They're just <em class="text-green-600 italic">tangled</em>.
       </h1>
 
-      <p class="hero__subhead">
+      <p class="mx-auto mb-[26px] max-w-[560px] text-[1.1875rem] leading-[1.6] text-muted">
         Field notes on platform engineering, distributed systems, and the deploys that keep you up
         at night, pulled apart one thread at a time.
       </p>
@@ -37,53 +37,53 @@ const newsletterEnabled = import.meta.env.PUBLIC_NEWSLETTER_ENABLED === 'true';
       {newsletterEnabled && (
         <>
           <form
-            class="hero__form"
+            class="mx-auto flex max-w-[420px] gap-2 max-sm:flex-col"
             action="https://buttondown.com/api/emails/embed-subscribe/convoluted.io"
             method="post"
             data-newsletter
           >
-            <div class="hero__input-wrap">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="hero__input-icon" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+            <div class="relative flex flex-1 items-center">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute left-3 shrink-0 pointer-events-none text-faint" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
               <input
                 type="email"
                 name="email"
                 placeholder="you@domain.dev"
                 aria-label="Email address"
-                class="hero__input"
+                class="h-10 w-full rounded-md border-[1.5px] border-paper-400 bg-surface-raised pr-3 pl-[38px] font-sans text-sm text-body transition-[border-color,box-shadow] duration-150 ease-brand focus:border-accent focus:shadow-focus focus:outline-none"
                 required
               />
             </div>
-            <button type="submit" class="hero__btn">Subscribe</button>
+            <button type="submit" class="h-10 rounded-md border-none bg-accent px-[18px] font-sans text-sm font-semibold whitespace-nowrap text-paper-50 transition-[background,transform] duration-150 ease-brand hover:bg-accent-hover active:translate-y-px max-sm:w-full">Subscribe</button>
           </form>
-          <p class="hero__status" data-newsletter-status role="status" aria-live="polite"></p>
-          <p class="hero__nudge">~2 posts a month · no spam · unsubscribe anytime</p>
+          <p class="mt-[11px] mb-0 min-h-[1.2em] font-mono text-[12.5px] text-faint empty:hidden data-[state=error]:text-[#c0392b]" data-newsletter-status role="status" aria-live="polite"></p>
+          <p class="mt-[11px] mb-0 font-mono text-[12.5px] text-faint">~2 posts a month · no spam · unsubscribe anytime</p>
         </>
       )}
     </div>
   </section>
 
-  <div class="page-content">
+  <div class="mx-auto max-w-page px-6 pb-12">
     <!-- Featured post -->
     {featuredPost && (
-      <div class="featured-wrap">
-        <a href={postHref(featuredPost)} class="featured-card">
-          <div class="featured-card__body">
-            <div class="featured-card__meta">
-              <span class="featured-badge">Featured</span>
+      <div class="mb-12">
+        <a href={postHref(featuredPost)} class="group grid grid-cols-[1.25fr_1fr] overflow-hidden rounded-lg border-[1.5px] border-green-200 bg-surface-card text-inherit no-underline shadow-sm transition-[box-shadow,border-color] duration-200 ease-brand hover:border-green-300 hover:no-underline hover:shadow-lg max-sm:grid-cols-1">
+          <div class="flex flex-col px-8 py-[30px]">
+            <div class="mb-3.5 flex flex-wrap items-center gap-2">
+              <span class="inline-flex items-center gap-[5px] rounded-full border border-green-200 bg-green-100 px-2.5 py-[3px] font-mono text-[11px] font-semibold tracking-[0.04em] text-green-700 uppercase before:size-1.5 before:shrink-0 before:rounded-full before:bg-green-500 before:content-['']">Featured</span>
               {featuredPost.data.tags.slice(0, 2).map(t => (
-                <span class="post-tag">#{t}</span>
+                <span class="font-mono text-[11.5px] text-ink-600">#{t}</span>
               ))}
             </div>
-            <h2 class="featured-card__title">{featuredPost.data.title}</h2>
-            <p class="featured-card__dek">{featuredPost.data.description}</p>
-            <span class="featured-card__cta">
+            <h2 class="mb-3 font-serif text-[clamp(1.5rem,3vw,2.125rem)] leading-[1.1] font-medium tracking-[-0.02em] text-balance text-ink-900">{featuredPost.data.title}</h2>
+            <p class="mb-5 flex-1 text-base leading-[1.6] text-body">{featuredPost.data.description}</p>
+            <span class="inline-flex h-[38px] items-center gap-[7px] self-start rounded-md bg-accent px-4 font-sans text-sm font-semibold text-paper-50 transition-colors duration-150 ease-brand group-hover:bg-accent-hover">
               Read the post
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
             </span>
           </div>
-          <div class="featured-card__art" aria-hidden="true">
-            <img src="/knot-motif.svg" class="featured-card__motif" width="320" height="64" alt="" />
-            <span class="featured-card__art-meta">
+          <div class="relative flex min-h-[180px] items-center justify-center overflow-hidden bg-[linear-gradient(150deg,var(--color-green-600),var(--color-green-800))] max-sm:min-h-[120px]" aria-hidden="true">
+            <img src="/knot-motif.svg" class="w-[115%] opacity-85 brightness-0 invert" width="320" height="64" alt="" />
+            <span class="absolute right-5 bottom-[18px] font-mono text-xs text-white/75">
               {featuredPost.data.minutesRead ?? '—'} min · {featuredPost.data.pubDate.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
             </span>
           </div>
@@ -93,10 +93,10 @@ const newsletterEnabled = import.meta.env.PUBLIC_NEWSLETTER_ENABLED === 'true';
 
     <!-- Post grid -->
     {gridPosts.length > 0 && (
-      <section class="post-grid-section">
-        <h2 class="post-grid-section__heading">Latest writing</h2>
+      <section>
+        <h2 class="mb-5 font-serif text-2xl font-medium text-ink-900">Latest writing</h2>
 
-        <div class="post-grid">
+        <div class="grid grid-cols-[repeat(auto-fill,minmax(320px,1fr))] gap-5">
           {gridPosts.map(post => (
             <PostCard
               title={post.data.title}
@@ -112,315 +112,13 @@ const newsletterEnabled = import.meta.env.PUBLIC_NEWSLETTER_ENABLED === 'true';
     )}
 
     {posts.length === 0 && (
-      <div class="empty-state">
+      <div class="px-6 py-16 text-center text-muted">
         <p>No posts yet. The first one is almost ready.</p>
-        <p class="empty-state__hint">It's simpler than it looks, promise.</p>
+        <p class="font-serif text-faint italic">It's simpler than it looks, promise.</p>
       </div>
     )}
   </div>
 </BaseLayout>
-
-<style>
-  /* ——— Hero ——— */
-  .hero {
-    padding: 56px 24px 48px;
-    text-align: center;
-  }
-
-  .hero__inner {
-    max-width: 760px;
-    margin: 0 auto;
-  }
-
-  .hero__eyebrow {
-    display: inline-flex;
-    align-items: center;
-    gap: 9px;
-    font-family: var(--font-mono);
-    font-size: 13px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--color-green-600);
-    margin-bottom: 18px;
-  }
-
-  .hero__headline {
-    font-family: var(--font-serif);
-    font-size: clamp(2.25rem, 6vw, 3.5rem);
-    line-height: 1.04;
-    color: var(--text-strong);
-    letter-spacing: -0.025em;
-    font-weight: 500;
-    margin: 0 0 18px;
-    text-wrap: balance;
-  }
-
-  .hero__headline em {
-    font-style: italic;
-    color: var(--color-green-600);
-  }
-
-  .hero__subhead {
-    font-size: 1.1875rem;
-    line-height: 1.6;
-    color: var(--text-muted);
-    max-width: 560px;
-    margin: 0 auto 26px;
-  }
-
-  .hero__form {
-    display: flex;
-    gap: 8px;
-    max-width: 420px;
-    margin: 0 auto;
-  }
-
-  .hero__input-wrap {
-    flex: 1;
-    position: relative;
-    display: flex;
-    align-items: center;
-  }
-
-  .hero__input-icon {
-    position: absolute;
-    left: 12px;
-    color: var(--text-faint);
-    pointer-events: none;
-    flex-shrink: 0;
-  }
-
-  .hero__input {
-    width: 100%;
-    height: 40px;
-    padding: 0 12px 0 38px;
-    background: var(--surface-raised);
-    border: 1.5px solid var(--border-default);
-    border-radius: 11px;
-    font-family: var(--font-body);
-    font-size: 14px;
-    color: var(--text-body);
-    transition: border-color 120ms var(--ease-out), box-shadow 120ms var(--ease-out);
-  }
-
-  .hero__input:focus {
-    outline: none;
-    border-color: var(--border-accent);
-    box-shadow: var(--ring-focus);
-  }
-
-  .hero__btn {
-    height: 40px;
-    padding: 0 18px;
-    background: var(--accent);
-    color: var(--color-paper-50);
-    font-family: var(--font-ui);
-    font-size: 14px;
-    font-weight: 600;
-    border: none;
-    border-radius: 11px;
-    cursor: pointer;
-    white-space: nowrap;
-    transition: background 120ms var(--ease-out), transform 120ms var(--ease-out);
-  }
-
-  .hero__btn:hover { background: var(--accent-hover); }
-  .hero__btn:active { transform: translateY(1px); }
-
-  .hero__nudge {
-    font-family: var(--font-mono);
-    font-size: 12.5px;
-    color: var(--text-faint);
-    margin-top: 11px;
-    margin-bottom: 0;
-  }
-
-  .hero__status {
-    font-family: var(--font-mono);
-    font-size: 12.5px;
-    color: var(--text-faint);
-    margin: 11px 0 0;
-    min-height: 1.2em;
-  }
-  .hero__status:empty { display: none; }
-  .hero__status[data-state="success"] { color: var(--color-lime-600, var(--text)); }
-  .hero__status[data-state="error"] { color: #c0392b; }
-
-  /* ——— Page content ——— */
-  .page-content {
-    max-width: var(--container-page);
-    margin: 0 auto;
-    padding: 0 24px 48px;
-  }
-
-  /* ——— Featured card ——— */
-  .featured-wrap { margin-bottom: 48px; }
-
-  .featured-card {
-    display: grid;
-    grid-template-columns: 1.25fr 1fr;
-    border: 1.5px solid var(--color-green-200);
-    border-radius: 16px;
-    overflow: hidden;
-    text-decoration: none;
-    color: inherit;
-    background: var(--surface-card);
-    box-shadow: var(--shadow-sm);
-    transition: box-shadow 200ms var(--ease-out), border-color 200ms var(--ease-out);
-  }
-
-  .featured-card:hover {
-    box-shadow: var(--shadow-lg);
-    border-color: var(--color-green-300);
-    text-decoration: none;
-    color: inherit;
-  }
-
-  .featured-card__body {
-    padding: 30px 32px;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .featured-card__meta {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 14px;
-    flex-wrap: wrap;
-  }
-
-  .featured-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    font-family: var(--font-mono);
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--color-green-700);
-    background: var(--color-green-100);
-    border: 1px solid var(--color-green-200);
-    border-radius: 999px;
-    padding: 3px 10px;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-  }
-
-  .featured-badge::before {
-    content: '';
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--color-green-500);
-    flex-shrink: 0;
-  }
-
-  .post-tag {
-    font-family: var(--font-mono);
-    font-size: 11.5px;
-    color: var(--color-ink-600);
-  }
-
-  .featured-card__title {
-    font-family: var(--font-serif);
-    font-size: clamp(1.5rem, 3vw, 2.125rem);
-    line-height: 1.1;
-    color: var(--text-strong);
-    letter-spacing: -0.02em;
-    font-weight: 500;
-    margin: 0 0 12px;
-    text-wrap: balance;
-  }
-
-  .featured-card__dek {
-    font-size: 16px;
-    line-height: 1.6;
-    color: var(--text-body);
-    margin: 0 0 20px;
-    flex: 1;
-  }
-
-  .featured-card__cta {
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-    height: 38px;
-    padding: 0 16px;
-    background: var(--accent);
-    color: var(--color-paper-50);
-    font-family: var(--font-ui);
-    font-size: 14px;
-    font-weight: 600;
-    border-radius: 11px;
-    align-self: flex-start;
-    transition: background 120ms var(--ease-out);
-  }
-
-  .featured-card:hover .featured-card__cta { background: var(--accent-hover); }
-
-  .featured-card__art {
-    background: linear-gradient(150deg, var(--color-green-600), var(--color-green-800));
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    overflow: hidden;
-    min-height: 180px;
-  }
-
-  .featured-card__motif {
-    width: 115%;
-    filter: brightness(0) invert(1);
-    opacity: 0.85;
-  }
-
-  .featured-card__art-meta {
-    position: absolute;
-    bottom: 18px;
-    right: 20px;
-    font-family: var(--font-mono);
-    font-size: 12px;
-    color: rgba(255, 255, 255, 0.75);
-  }
-
-  /* ——— Post grid ——— */
-  .post-grid-section__heading {
-    font-family: var(--font-serif);
-    font-size: 1.5rem;
-    color: var(--text-strong);
-    margin: 0 0 20px;
-    font-weight: 500;
-  }
-
-  .post-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 20px;
-  }
-
-  /* ——— Empty state ——— */
-  .empty-state {
-    text-align: center;
-    padding: 64px 24px;
-    color: var(--text-muted);
-  }
-
-  .empty-state__hint {
-    font-family: var(--font-serif);
-    font-style: italic;
-    color: var(--text-faint);
-  }
-
-  /* ——— Responsive ——— */
-  @media (max-width: 640px) {
-    .featured-card {
-      grid-template-columns: 1fr;
-    }
-    .featured-card__art { min-height: 120px; }
-    .hero__form { flex-direction: column; }
-    .hero__btn { width: 100%; }
-  }
-</style>
 
 <script>
   import "../scripts/newsletter";
