@@ -117,47 +117,26 @@
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* Semantic aliases — available as CSS custom properties throughout */
+/* Semantic aliases consumed by the base element styles and prose-brand below.
+   Component markup uses the @theme palette/tokens directly as Tailwind
+   utilities instead — these remain only for the handful of bare-tag and
+   pseudo-element rules that have no markup to attach a utility class to. */
 :root {
-  --font-body: var(--font-sans);
   --font-heading: var(--font-serif);
-  --font-ui: var(--font-sans);
   --font-code: var(--font-mono);
-  --font-display: var(--font-serif);
 
   --surface-page: var(--color-paper-100);
-  --surface-card: var(--color-paper-50);
-  --surface-raised: var(--color-surface-raised);
   --surface-sunken: var(--color-paper-200);
-  --surface-inset: var(--color-paper-300);
-  --surface-inverse: var(--color-ink-900);
-  --surface-accent: var(--color-green-500);
-  --surface-accent-soft: var(--color-green-50);
 
   --text-strong: var(--color-ink-900);
   --text-body: var(--color-ink-700);
   --text-muted: var(--color-ink-500);
   --text-faint: var(--color-ink-400);
-  --text-on-accent: var(--color-paper-50);
-  --text-inverse: var(--color-paper-100);
   --text-link: var(--color-green-600);
   --text-link-hover: var(--color-green-700);
 
   --border-subtle: var(--color-paper-300);
   --border-default: var(--color-paper-400);
-  --border-strong: var(--color-paper-500);
-  --border-accent: var(--color-green-500);
-
-  --accent: var(--color-green-500);
-  --accent-hover: var(--color-green-600);
-  --accent-active: var(--color-green-700);
-  --accent-soft: var(--color-green-50);
-  --pop: var(--color-lime-400);
-
-  --success: var(--color-green-500);
-  --warning: var(--color-amber-500);
-  --danger: var(--color-clay-500);
-  --info: var(--color-slate-500);
 
   --code-bg: #1E2A22;
   --code-fg: #E6E9E2;
@@ -165,9 +144,6 @@
   --selection-bg: var(--color-green-100);
   --ring-focus: 0 0 0 3px rgba(58, 136, 86, 0.28);
 
-  --dur-fast: 120ms;
-  --dur-base: 200ms;
-  --dur-slow: 360ms;
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
@@ -179,7 +155,7 @@ body {
   margin: 0;
   background: var(--surface-page);
   color: var(--text-body);
-  font-family: var(--font-body);
+  font-family: var(--font-sans);
   font-size: 1.125rem;
   line-height: 1.65;
   -webkit-font-smoothing: antialiased;
@@ -227,15 +203,6 @@ hr { border: none; border-top: 1px solid var(--border-default); margin: 2rem 0; 
 small { font-size: 0.875rem; }
 ::placeholder { color: var(--text-faint); }
 :focus-visible { outline: none; box-shadow: var(--ring-focus); border-radius: 7px; }
-
-.eyebrow {
-  font-family: var(--font-code);
-  font-size: 0.75rem;
-  font-weight: 500;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--text-muted);
-}
 
 /* ——— Prose (article reading view) ———
    Base structure (spacing, lists, tables) comes from @tailwindcss/typography.
