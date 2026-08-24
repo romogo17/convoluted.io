@@ -6,7 +6,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **Stack:** Astro 6 (static output) · MDX · Tailwind v4 (Vite plugin, not PostCSS) · Cloudflare Pages
 
-**Content pipeline:** Blog posts live in `src/content/blog/` as `.mdx` files. The content collection is defined in `src/content.config.ts`. Two remark plugins run at build time:
+**Package manager:** pnpm. Use `pnpm <script>` (not `npm run`)
+
+**Content pipeline:** Blog posts live in `src/content/blog/` as `.mdx` files. The content collection uses the Content Layer API (`glob()` loader) in `src/content.config.ts`. Two remark plugins run at build time:
 
 - `src/plugins/remark-reading-time.mjs` — injects `minutesRead` into frontmatter
 - `src/plugins/remark-modified-time.mjs` — injects `lastModified` from git history

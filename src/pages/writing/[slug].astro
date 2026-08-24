@@ -1,10 +1,9 @@
 ---
-import { getCollection, render } from 'astro:content';
 import PostLayout from '../../layouts/PostLayout.astro';
+import { getPosts, renderPost } from '../../lib/posts';
 
 export async function getStaticPaths() {
-  const posts = await getCollection('blog');
-  const sorted = posts.sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
+  const sorted = await getPosts();
 
   return sorted.map((post, i) => ({
     params: { slug: post.id.replace(/\.(md|mdx)$/, '') },
@@ -16,7 +15,7 @@ export async function getStaticPaths() {
 }
 
 const { post, nextPost } = Astro.props;
-const { Content } = await render(post);
+const { Content } = await renderPost(post);
 ---
 
 <PostLayout post={post} nextPost={nextPost}>

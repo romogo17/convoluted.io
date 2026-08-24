@@ -73,10 +73,10 @@ const jsonLd = JSON.stringify({
           <span class="article__author">Roberto Mora</span>
           <span class="article__date-read">
             <time datetime={pubDate.toISOString()}>{dateStr}</time>
-            {minutesRead && <> · {minutesRead} min read</>}
             {lastModifiedStr && lastModifiedStr !== dateStr && (
-              <> · Updated {lastModifiedStr}</>
+              <span class="article__updated">(Updated {lastModifiedStr})</span>
             )}
+            {minutesRead && <span class="article__read-time">{minutesRead} min read</span>}
           </span>
         </div>
         <div class="article__byline-actions">
@@ -256,8 +256,21 @@ const jsonLd = JSON.stringify({
   }
 
   .article__date-read {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px 16px;
     font-size: 13px;
     color: var(--text-faint);
+  }
+
+  .article__updated {
+    opacity: 0.7;
+  }
+
+  .article__read-time::before {
+    content: '·';
+    margin-right: 6px;
   }
 
   .article__byline-actions {
