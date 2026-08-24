@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
 
 @theme {
   /* ---- Fonts ---- */
@@ -83,6 +84,14 @@
   /* ---- Motion ---- */
   --ease-brand: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --animate-callout-in: callout-in 380ms var(--ease-brand) forwards;
+
+  /* ---- Focus ring ---- */
+  --shadow-focus: 0 0 0 3px rgba(58, 136, 86, 0.28);
+
+  /* ---- Container widths (max-w-prose / max-w-page) ---- */
+  --container-prose: 44rem;
+  --container-page: 72rem;
 
   /* ---- Brand type scale ---- */
   --text-display: 4.25rem;
@@ -101,6 +110,11 @@
   --text-eyebrow: 0.75rem;
   --text-eyebrow--line-height: 1;
   --text-eyebrow--letter-spacing: 0.08em;
+}
+
+@keyframes callout-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 /* Semantic aliases — available as CSS custom properties throughout */
@@ -155,9 +169,6 @@
   --dur-base: 200ms;
   --dur-slow: 360ms;
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
-
-  --container-prose: 44rem;
-  --container-page: 72rem;
 }
 
 /* ——— Base element styles ——— */
@@ -226,64 +237,53 @@ small { font-size: 0.875rem; }
   color: var(--text-muted);
 }
 
-/* ——— Prose (article reading view) ——— */
-.prose {
-  font-size: 1.125rem;
-  line-height: 1.72;
-  color: var(--text-body);
+/* ——— Prose (article reading view) ———
+   Base structure (spacing, lists, tables) comes from @tailwindcss/typography.
+   prose-brand carries this site's color mapping into the plugin's variables;
+   the rules below cover the handful of non-color choices (headings/blockquote
+   in the serif display face, no decorative quote glyphs, expressive-code
+   rhythm) that the plugin doesn't expose through utility modifiers. */
+@utility prose-brand {
+  --tw-prose-body: var(--text-body);
+  --tw-prose-headings: var(--text-strong);
+  --tw-prose-lead: var(--text-body);
+  --tw-prose-links: var(--text-link);
+  --tw-prose-bold: var(--text-strong);
+  --tw-prose-counters: var(--text-muted);
+  --tw-prose-bullets: var(--color-green-500);
+  --tw-prose-hr: var(--border-default);
+  --tw-prose-quotes: var(--text-strong);
+  --tw-prose-quote-borders: var(--color-green-400);
+  --tw-prose-captions: var(--text-faint);
+  --tw-prose-kbd: var(--text-strong);
+  --tw-prose-code: var(--color-green-700);
+  --tw-prose-pre-code: var(--code-fg);
+  --tw-prose-pre-bg: var(--code-bg);
+  --tw-prose-th-borders: var(--border-default);
+  --tw-prose-td-borders: var(--border-subtle);
 }
-.prose h2 {
-  font-family: var(--font-heading);
-  font-size: 1.875rem;
-  line-height: 1.2;
-  color: var(--text-strong);
-  letter-spacing: -0.02em;
-  margin: 2.75rem 0 0.875rem;
-  font-weight: 600;
-}
-.prose h3 {
-  font-family: var(--font-heading);
-  font-size: 1.4375rem;
-  line-height: 1.25;
-  color: var(--text-strong);
-  margin: 2rem 0 0.625rem;
-  font-weight: 600;
-}
-.prose p { margin: 0 0 1.25rem; text-wrap: pretty; }
-.prose a { color: var(--text-link); font-weight: 500; }
-.prose strong { color: var(--text-strong); font-weight: 600; }
-.prose em { font-style: italic; }
-.prose ul, .prose ol { margin: 0 0 1.25rem; padding-left: 1.375rem; }
-.prose li { margin-bottom: 0.5rem; }
-.prose li::marker { color: var(--color-green-500); }
-.prose blockquote {
-  margin: 1.625rem 0;
-  padding: 0.25rem 0 0.25rem 1.375rem;
-  border-left: 3px solid var(--color-green-400);
+
+.prose { font-size: 1.125rem; line-height: 1.72; }
+.prose :where(h2, h3):not(:where([class~="not-prose"] *)) { font-family: var(--font-heading); font-weight: 600; }
+.prose :where(h2):not(:where([class~="not-prose"] *)) { font-size: 1.875rem; line-height: 1.2; letter-spacing: -0.02em; margin: 2.75rem 0 0.875rem; }
+.prose :where(h3):not(:where([class~="not-prose"] *)) { font-size: 1.4375rem; line-height: 1.25; margin: 2rem 0 0.625rem; }
+.prose :where(a):not(:where([class~="not-prose"] *)) { font-weight: 500; }
+.prose :where(blockquote):not(:where([class~="not-prose"] *)) {
   font-family: var(--font-heading);
   font-style: italic;
   font-size: 1.3125rem;
   line-height: 1.5;
-  color: var(--text-strong);
+  border-left-width: 3px;
+  font-weight: 400;
 }
-.prose pre {
-  background: var(--code-bg);
-  color: var(--code-fg);
+.prose :where(blockquote p:first-of-type)::before,
+.prose :where(blockquote p:last-of-type)::after {
+  content: none;
+}
+.prose :where(pre):not(:where([class~="not-prose"] *)) {
   border-radius: 11px;
-  padding: 1.25rem 1.5rem;
-  overflow-x: auto;
-  font-size: 0.9rem;
-  line-height: 1.6;
-  margin: 1.625rem 0;
   box-shadow: var(--shadow-md);
 }
-.prose pre code { background: none; border: none; padding: 0; font-size: inherit; color: inherit; }
 /* astro-expressive-code blocks: keep the top rhythm, give more room below */
 .prose .expressive-code { margin-block: 1.625rem 2.5rem; }
-.prose img { border-radius: 11px; max-width: 100%; height: auto; }
-.prose figure { margin: 1.75rem 0; }
-.prose figcaption { font-size: 0.875rem; color: var(--text-faint); text-align: center; margin-top: 0.5rem; }
-.prose hr { margin: 2.5rem 0; }
-.prose table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.9rem; }
-.prose th { text-align: left; padding: 0.5rem 0.75rem; border-bottom: 2px solid var(--border-default); font-weight: 600; color: var(--text-strong); }
-.prose td { padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--border-subtle); }
+.prose :where(img):not(:where([class~="not-prose"] *)) { border-radius: 11px; }
